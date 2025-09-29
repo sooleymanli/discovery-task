@@ -68,6 +68,16 @@ export default function DashboardPage() {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [autoRefresh, setAutoRefresh] = useState(false);
   const [refreshInterval, setRefreshInterval] = useState(30000);
+  const [calcStats, setCalcStats] = useState<{
+    total: number;
+    last7Days: number;
+    avgPremium: number;
+    byGender: Record<string, number>;
+    byAgeBucket?: Record<string, number>;
+    byTerm?: Record<string, number>;
+    byCoverageBucket?: Record<string, number>;
+    trend: { date: string; count: number }[];
+  } | null>(null);
 
   const loadDashboard = async () => {
     try {
@@ -110,6 +120,28 @@ export default function DashboardPage() {
       const dashboardData = await response.json();
       setData({ ...dashboardData, role });
       setLastUpdated(new Date());
+
+      // Load calculator analytics (server aggregates from calculator_quote_logs)
+      try {
+        const calcRes = await fetch('/api/admin/analytics/calculator');
+        if (calcRes.ok) {
+          const j = await calcRes.json();
+          setCalcStats({
+            total: j.total ?? 0,
+            last7Days: j.last7Days ?? 0,
+            avgPremium: j.avgPremium ?? 0,
+            byGender: j.byGender ?? {},
+            byAgeBucket: j.byAgeBucket ?? {},
+            byTerm: j.byTerm ?? {},
+            byCoverageBucket: j.byCoverageBucket ?? {},
+            trend: j.trend ?? [],
+          });
+        } else {
+          setCalcStats(null);
+        }
+      } catch {
+        setCalcStats(null);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Xəta baş verdi');
     } finally {
@@ -231,8 +263,35 @@ export default function DashboardPage() {
 
       {data.role === 'superadmin' ? (
         <div className="space-y-6">
+      
           {/* Overview Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+
+          {calcStats && (
+          <>
+
+<div className="rounded-2xl border border-purple-100 bg-gradient-to-br from-purple-50 to-indigo-50 p-6 shadow-sm">
+                <div className="text-sm text-purple-700 font-medium">Kalkulyator Sorğuları (Cəm)</div>
+                <div className="mt-2 text-3xl font-extrabold text-purple-600">{calcStats.total}</div>
+                <div className="mt-1 text-xs text-purple-700">Son 90 gün</div>
+              </div>
+              <div className="rounded-2xl border border-cyan-100 bg-gradient-to-br from-cyan-50 to-teal-50 p-6 shadow-sm">
+                <div className="text-sm text-cyan-700 font-medium">Son 7 Gün</div>
+                <div className="mt-2 text-3xl font-extrabold text-cyan-600">{calcStats.last7Days}</div>
+                <div className="mt-1 text-xs text-cyan-700">Kalkulyator istifadəsi</div>
+              </div>
+              <div className="rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-green-50 p-6 shadow-sm">
+                <div className="text-sm text-emerald-700 font-medium">Orta Aylıq Ödəniş</div>
+                <div className="mt-2 text-3xl font-extrabold text-emerald-600">{calcStats.avgPremium} AZN</div>
+                <div className="mt-1 text-xs text-emerald-700">Server hesablaması</div>
+              </div>
+             
+            </>
+          )}
+
+
+
             <div className="group relative overflow-hidden rounded-2xl border border-cyan-100 bg-gradient-to-br from-cyan-50 to-teal-50 p-6 shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-cyan-200 to-teal-200 rounded-full blur-2xl opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
               <div className="relative">
@@ -249,14 +308,7 @@ export default function DashboardPage() {
                 <div className="text-xs text-emerald-600 mt-1">İşləyən agentlər</div>
               </div>
             </div>
-            <div className="group relative overflow-hidden rounded-2xl border border-purple-100 bg-gradient-to-br from-purple-50 to-indigo-50 p-6 shadow-lg hover:shadow-xl transition-all duration-300">
-              <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-purple-200 to-indigo-200 rounded-full blur-2xl opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
-              <div className="relative">
-                <div className="text-3xl font-bold text-purple-600 mb-2">{data.calculator.totalUses}</div>
-                <div className="text-sm font-semibold text-gray-900">Kalkulyator İstifadəsi</div>
-                <div className="text-xs text-purple-600 mt-1">Qiymət hesablamaları</div>
-              </div>
-            </div>
+            {/* Removed legacy calculator totalUses card in favor of server-logged metrics */}
             <div className="group relative overflow-hidden rounded-2xl border border-orange-100 bg-gradient-to-br from-orange-50 to-yellow-50 p-6 shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-orange-200 to-yellow-200 rounded-full blur-2xl opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
               <div className="relative">
@@ -283,7 +335,8 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Charts Grid */}
+          {/* Applications Section */}
+          <h2 className="text-3xl text-center font-bold text-gray-900 mt-24">Müraciətlər</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4 lg:gap-6">
             {/* Applications by Status */}
             <div className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm">
@@ -361,8 +414,13 @@ export default function DashboardPage() {
               </ResponsiveContainer>
             </div>
 
-            {/* Daily Trend */}
-            <div className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm">
+        
+
+          {/* Agents Section */}
+          </div>
+
+              {/* Daily Trend */}
+              <div className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm">
               <h3 className="text-lg font-semibold mb-4">Günlük Müraciət Trendi</h3>
               <ResponsiveContainer width="100%" height={300}>
                 <AreaChart data={data.applications.dailyTrend}>
@@ -373,24 +431,14 @@ export default function DashboardPage() {
                   <Area type="monotone" dataKey="count" stroke="#F59E0B" fill="#F59E0B" fillOpacity={0.3} />
                 </AreaChart>
               </ResponsiveContainer>
-            </div>
+          </div>
 
-            {/* Calculator Usage by Weekday */}
-            <div className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm">
-              <h3 className="text-lg font-semibold mb-4">Həftənin Günlərinə Görə İstifadə</h3>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={data.calculator.byWeekday}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="day" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="uses" fill="#8B5CF6" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
 
+
+          <h2 className="text-3xl text-center font-bold text-gray-900 mt-24">Agentlər</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4 lg:gap-6">
             {/* Agent Performance */}
-            <div className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm">
+            <div className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm min-h-[380px] flex flex-col">
               <h3 className="text-lg font-semibold mb-4">Agent Performansı</h3>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={data.agents.performance}>
@@ -404,7 +452,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Peak Hours */}
-            <div className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm">
+            <div className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm min-h-[380px] flex flex-col">
               <h3 className="text-lg font-semibold mb-4">Peak Saatlar</h3>
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={data.business.peakHours}>
@@ -416,6 +464,85 @@ export default function DashboardPage() {
                 </LineChart>
               </ResponsiveContainer>
             </div>
+          </div>
+
+          {/* Calculator Section */}
+          <h2 className="text-3xl text-center font-bold text-gray-900 mt-24">Kalkulyator</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4 lg:gap-6">
+            {/* Calculator Trend (last 14 days) */}
+            {calcStats && (
+              <div className="rounded-xl border border-purple-100 bg-white p-6 shadow-sm">
+                <h3 className="text-lg font-semibold mb-4">Kalkulyator Trendi (14 gün)</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <AreaChart data={calcStats.trend}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" />
+                    <YAxis />
+                    <Tooltip />
+                    <Area type="monotone" dataKey="count" stroke="#8B5CF6" fill="#8B5CF6" fillOpacity={0.25} />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+
+            {/* Calculator by Gender */}
+            {calcStats && (
+              <div className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm">
+                <h3 className="text-lg font-semibold mb-4">Cinsə Görə Sorğular</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={Object.entries(calcStats.byGender).map(([gender, count]) => ({ gender, count }))}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ gender, count }) => `${gender}: ${count}`}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="count"
+                    >
+                      {Object.entries(calcStats.byGender).map(([gender], index) => (
+                        <Cell key={`cell-g-${index}`} fill={gender === 'male' ? '#06B6D4' : '#A78BFA'} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+
+            {/* Calculator by Age Bucket */}
+            {calcStats && (
+              <div className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm">
+                <h3 className="text-lg font-semibold mb-4">Yaş Qruplarına Görə Sorğular</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={Object.entries(calcStats.byAgeBucket || {}).map(([ageGroup, count]) => ({ ageGroup, count }))}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="ageGroup" />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="count" fill="#10B981" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+
+            {/* Calculator by Coverage Bucket */}
+            {calcStats && (
+              <div className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm">
+                <h3 className="text-lg font-semibold mb-4">Məbləğ Aralıqlarına Görə Sorğular</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={Object.entries(calcStats.byCoverageBucket || {}).map(([range, count]) => ({ range, count }))}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="range" />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="count" fill="#06B6D4" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </div>
 
             {/* Most Used Parameters */}
             <div className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm">
@@ -431,7 +558,7 @@ export default function DashboardPage() {
               </ResponsiveContainer>
             </div>
           </div>
-        </div>
+        
       ) : (
         <div className="space-y-6">
           {/* Agent Overview Cards */}

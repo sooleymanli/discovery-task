@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@/lib/supabase';
 
-export default function AgentAcceptPage() {
+function AgentAcceptContent() {
   const router = useRouter();
   const params = useSearchParams();
   const supabase = createSupabaseBrowserClient();
@@ -48,8 +48,8 @@ export default function AgentAcceptPage() {
         const { error } = await supabase.auth.setSession({ access_token: access_token!, refresh_token: refresh_token! });
         if (error) throw error;
         setSessionReady(true);
-      } catch (e: any) {
-        setError(e?.message ?? 'Sessiya qurulmadı');
+      } catch (e: unknown) {
+        setError((e as Error)?.message ?? 'Sessiya qurulmadı');
       }
     })();
   }, [params]);
@@ -67,8 +67,8 @@ export default function AgentAcceptPage() {
       if (updErr) throw updErr;
       await supabase.from('profiles').update({ status: 'active' }).eq('id', userData.user.id);
       router.replace('/admin');
-    } catch (e: any) {
-      setError(e?.message ?? 'Xəta baş verdi');
+    } catch (e: unknown) {
+      setError((e as Error)?.message ?? 'Xəta baş verdi');
     } finally {
       setLoading(false);
     }
@@ -103,4 +103,17 @@ export default function AgentAcceptPage() {
   );
 }
 
-
+export default function AgentAcceptPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-teal-50 to-emerald-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-cyan-200 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-cyan-600 font-medium">Yüklənir...</p>
+        </div>
+      </div>
+    }>
+      <AgentAcceptContent />
+    </Suspense>
+  );
+}

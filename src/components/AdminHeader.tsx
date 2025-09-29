@@ -1,14 +1,13 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@/lib/supabase';
 import { NotificationCenter } from './NotificationCenter';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export function AdminHeader() {
   const router = useRouter();
-  const path = usePathname();
   const supabase = createSupabaseBrowserClient();
   const [role, setRole] = useState<string | null>(null);
   const [open, setOpen] = useState(false);

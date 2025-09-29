@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -428,7 +428,7 @@ export default function Home() {
 
           <div className="grid gap-8 lg:grid-cols-3">
             {/* Form */}
-            <form onSubmit={quoteForm.handleSubmit(onQuoteSubmit)} className="lg:col-span-2 space-y-6">
+            <form onSubmit={quoteForm.handleSubmit(onQuoteSubmit as any)} className="lg:col-span-2 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <motion.div 
                   initial={{ opacity: 0, x: -20 }}

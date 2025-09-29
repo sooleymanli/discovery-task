@@ -36,7 +36,7 @@ export function SiteFooter() {
               </div>
             </div>
             <p className="text-gray-900/80 leading-relaxed mb-4">
-              <span className="font-bold text-cyan-600">"Plan A ilə risk alırsan, PlanB var"</span>
+              <span className="font-bold text-cyan-600">&ldquo;Plan A ilə risk alırsan, PlanB var&rdquo;</span>
             </p>
             <p className="text-gray-900/70 leading-relaxed mb-6">
               Gənc insanlar üçün həyatlarını sığortalayır. 

@@ -8,23 +8,23 @@ export function createSupabaseBrowserClient() {
   );
 }
 
-export function createSupabaseServerClient({ cookies }: { cookies: any }): SupabaseClient {
+export function createSupabaseServerClient({ cookies }: { cookies: { get?: (name: string) => { value?: string } | string | undefined; set?: (name: string, value: string, options: CookieOptions) => void; remove?: (name: string, options: CookieOptions) => void } }): SupabaseClient {
   const get = (name: string) => {
     try {
       const v = cookies?.get?.(name);
       return typeof v === 'string' ? v : v?.value;
     } catch {
-      return undefined as any;
+      return undefined;
     }
   };
   const set = (name: string, value: string, options: CookieOptions) => {
     try {
-      cookies?.set?.(name, value, options as any);
+      cookies?.set?.(name, value, options);
     } catch {}
   };
   const remove = (name: string, options: CookieOptions) => {
     try {
-      cookies?.remove?.(name, options as any);
+      cookies?.remove?.(name, options);
     } catch {}
   };
 

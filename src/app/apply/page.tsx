@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSearchParams } from 'next/navigation';
 import { z } from 'zod';
@@ -22,7 +22,7 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>;
 
-export default function ApplyPage() {
+function ApplyPageContent() {
   const search = useSearchParams();
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -415,5 +415,20 @@ export default function ApplyPage() {
         </motion.div>
       </div>
     </div>
+  );
+}
+
+export default function ApplyPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-teal-50 to-emerald-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-cyan-200 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-cyan-600 font-medium">Yüklənir...</p>
+        </div>
+      </div>
+    }>
+      <ApplyPageContent />
+    </Suspense>
   );
 }

@@ -1,0 +1,60 @@
+-- Clear existing test data
+DELETE FROM applications;
+DELETE FROM analytics;
+
+-- Insert new test applications with proper gender data
+INSERT INTO applications (full_name, email, phone, age, gender, coverage_amount, term_years, premium_estimate, status, created_at) VALUES
+('Əli Məmmədov', 'ali@example.com', '+994501234567', 30, 'male', 50000, 10, 25.50, 'pending', NOW() - INTERVAL '5 days'),
+('Aynur Həsənova', 'aynur@example.com', '+994507654321', 28, 'female', 75000, 15, 35.25, 'in_progress', NOW() - INTERVAL '3 days'),
+('Rəşad Quliyev', 'rashad@example.com', '+994509876543', 35, 'male', 100000, 20, 45.80, 'closed', NOW() - INTERVAL '1 day'),
+('Leyla Əliyeva', 'leyla@example.com', '+994501111111', 25, 'female', 30000, 5, 15.75, 'pending', NOW() - INTERVAL '2 days'),
+('Cavid Məlikov', 'cavid@example.com', '+994502222222', 40, 'male', 150000, 25, 65.30, 'in_progress', NOW() - INTERVAL '4 days'),
+('Günel Rəhimova', 'gunel@example.com', '+994503333333', 32, 'female', 80000, 12, 38.90, 'pending', NOW() - INTERVAL '6 days'),
+('Tural Həsənov', 'tural@example.com', '+994504444444', 45, 'male', 120000, 18, 55.40, 'closed', NOW() - INTERVAL '7 days'),
+('Səbinə Quliyeva', 'sabina@example.com', '+994505555555', 29, 'female', 60000, 8, 28.60, 'in_progress', NOW() - INTERVAL '1 day'),
+('Rəşad Əliyev', 'rashad2@example.com', '+994506666666', 33, 'male', 90000, 14, 42.30, 'pending', NOW() - INTERVAL '8 days'),
+('Nərgiz Məmmədova', 'nargiz@example.com', '+994507777777', 27, 'female', 45000, 7, 21.15, 'in_progress', NOW() - INTERVAL '9 days'),
+('Elçin Həsənov', 'elcin@example.com', '+994508888888', 38, 'male', 110000, 16, 70.40, 'closed', NOW() - INTERVAL '10 days'),
+('Aysel Quliyeva', 'aysel@example.com', '+994509999999', 31, 'female', 70000, 11, 33.25, 'pending', NOW() - INTERVAL '11 days'),
+('Vüsal Məlikov', 'vusal@example.com', '+994500000000', 42, 'male', 130000, 22, 58.50, 'in_progress', NOW() - INTERVAL '12 days'),
+('Günelə Rəhimova', 'gunela@example.com', '+994501111112', 26, 'female', 40000, 6, 18.00, 'pending', NOW() - INTERVAL '13 days'),
+('Rəşad Həsənov', 'rashad3@example.com', '+994502222223', 36, 'male', 95000, 13, 60.80, 'closed', NOW() - INTERVAL '14 days'),
+('Fəridə Məmmədova', 'farida@example.com', '+994501234568', 24, 'female', 35000, 6, 16.80, 'pending', NOW() - INTERVAL '15 days'),
+('Rəşad Əliyev', 'rashad4@example.com', '+994501234569', 39, 'male', 85000, 17, 48.50, 'in_progress', NOW() - INTERVAL '16 days'),
+('Günelə Rəhimova', 'gunela2@example.com', '+994501234570', 23, 'female', 25000, 4, 12.50, 'pending', NOW() - INTERVAL '17 days'),
+('Elçin Məlikov', 'elcin2@example.com', '+994501234571', 44, 'male', 140000, 24, 72.30, 'closed', NOW() - INTERVAL '18 days'),
+('Aysel Həsənova', 'aysel2@example.com', '+994501234572', 26, 'female', 55000, 9, 26.40, 'in_progress', NOW() - INTERVAL '19 days'),
+('Vüsal Quliyev', 'vusal2@example.com', '+994501234573', 37, 'male', 105000, 19, 58.70, 'pending', NOW() - INTERVAL '20 days'),
+('Nərgiz Əliyeva', 'nargiz2@example.com', '+994501234574', 22, 'female', 20000, 3, 9.60, 'in_progress', NOW() - INTERVAL '21 days');
+
+-- Insert test analytics with gender data
+INSERT INTO analytics (event_type, event_properties, source, timestamp) VALUES
+('calculator_used', '{"age": 30, "gender": "male", "coverageAmount": 50000, "termYears": 10, "smoker": false, "premium": 25.50}', 'landing_page', NOW() - INTERVAL '1 hour'),
+('calculator_used', '{"age": 28, "gender": "female", "coverageAmount": 75000, "termYears": 15, "smoker": false, "premium": 35.25}', 'landing_page', NOW() - INTERVAL '2 hours'),
+('calculator_used', '{"age": 35, "gender": "male", "coverageAmount": 100000, "termYears": 20, "smoker": true, "premium": 45.80}', 'landing_page', NOW() - INTERVAL '3 hours'),
+('calculator_used', '{"age": 25, "gender": "female", "coverageAmount": 30000, "termYears": 5, "smoker": false, "premium": 15.75}', 'landing_page', NOW() - INTERVAL '4 hours'),
+('calculator_used', '{"age": 40, "gender": "male", "coverageAmount": 150000, "termYears": 25, "smoker": false, "premium": 65.30}', 'landing_page', NOW() - INTERVAL '5 hours'),
+('calculator_used', '{"age": 32, "gender": "female", "coverageAmount": 80000, "termYears": 12, "smoker": false, "premium": 38.90}', 'landing_page', NOW() - INTERVAL '6 hours'),
+('calculator_used', '{"age": 45, "gender": "male", "coverageAmount": 120000, "termYears": 18, "smoker": true, "premium": 55.40}', 'landing_page', NOW() - INTERVAL '7 hours'),
+('calculator_used', '{"age": 29, "gender": "female", "coverageAmount": 60000, "termYears": 8, "smoker": false, "premium": 28.60}', 'landing_page', NOW() - INTERVAL '8 hours'),
+('calculator_used', '{"age": 33, "gender": "male", "coverageAmount": 90000, "termYears": 14, "smoker": false, "premium": 42.30}', 'landing_page', NOW() - INTERVAL '9 hours'),
+('calculator_used', '{"age": 27, "gender": "female", "coverageAmount": 45000, "termYears": 7, "smoker": false, "premium": 21.15}', 'landing_page', NOW() - INTERVAL '10 hours'),
+('calculator_used', '{"age": 38, "gender": "male", "coverageAmount": 110000, "termYears": 16, "smoker": true, "premium": 70.40}', 'landing_page', NOW() - INTERVAL '11 hours'),
+('calculator_used', '{"age": 31, "gender": "female", "coverageAmount": 70000, "termYears": 11, "smoker": false, "premium": 33.25}', 'landing_page', NOW() - INTERVAL '12 hours'),
+('calculator_used', '{"age": 42, "gender": "male", "coverageAmount": 130000, "termYears": 22, "smoker": false, "premium": 58.50}', 'landing_page', NOW() - INTERVAL '13 hours'),
+('calculator_used', '{"age": 26, "gender": "female", "coverageAmount": 40000, "termYears": 6, "smoker": false, "premium": 18.00}', 'landing_page', NOW() - INTERVAL '14 hours'),
+('calculator_used', '{"age": 36, "gender": "male", "coverageAmount": 95000, "termYears": 13, "smoker": true, "premium": 60.80}', 'landing_page', NOW() - INTERVAL '15 hours'),
+('calculator_used', '{"age": 24, "gender": "female", "coverageAmount": 35000, "termYears": 6, "smoker": false, "premium": 16.80}', 'landing_page', NOW() - INTERVAL '16 hours'),
+('calculator_used', '{"age": 39, "gender": "male", "coverageAmount": 85000, "termYears": 17, "smoker": false, "premium": 48.50}', 'landing_page', NOW() - INTERVAL '17 hours'),
+('calculator_used', '{"age": 23, "gender": "female", "coverageAmount": 25000, "termYears": 4, "smoker": false, "premium": 12.50}', 'landing_page', NOW() - INTERVAL '18 hours'),
+('calculator_used', '{"age": 44, "gender": "male", "coverageAmount": 140000, "termYears": 24, "smoker": true, "premium": 72.30}', 'landing_page', NOW() - INTERVAL '19 hours'),
+('calculator_used', '{"age": 26, "gender": "female", "coverageAmount": 55000, "termYears": 9, "smoker": false, "premium": 26.40}', 'landing_page', NOW() - INTERVAL '20 hours'),
+('calculator_used', '{"age": 37, "gender": "male", "coverageAmount": 105000, "termYears": 19, "smoker": false, "premium": 58.70}', 'landing_page', NOW() - INTERVAL '21 hours'),
+('calculator_used', '{"age": 22, "gender": "female", "coverageAmount": 20000, "termYears": 3, "smoker": false, "premium": 9.60}', 'landing_page', NOW() - INTERVAL '22 hours'),
+('calculator_used', '{"age": 41, "gender": "male", "coverageAmount": 125000, "termYears": 21, "smoker": true, "premium": 67.50}', 'landing_page', NOW() - INTERVAL '23 hours'),
+('calculator_used', '{"age": 29, "gender": "female", "coverageAmount": 65000, "termYears": 10, "smoker": false, "premium": 31.20}', 'landing_page', NOW() - INTERVAL '24 hours'),
+('calculator_used', '{"age": 34, "gender": "male", "coverageAmount": 90000, "termYears": 15, "smoker": false, "premium": 45.60}', 'landing_page', NOW() - INTERVAL '25 hours'),
+('calculator_used', '{"age": 27, "gender": "female", "coverageAmount": 50000, "termYears": 8, "smoker": false, "premium": 24.00}', 'landing_page', NOW() - INTERVAL '26 hours'),
+('calculator_used', '{"age": 43, "gender": "male", "coverageAmount": 135000, "termYears": 23, "smoker": true, "premium": 69.80}', 'landing_page', NOW() - INTERVAL '27 hours'),
+('calculator_used', '{"age": 25, "gender": "female", "coverageAmount": 40000, "termYears": 7, "smoker": false, "premium": 19.20}', 'landing_page', NOW() - INTERVAL '28 hours'),
+('calculator_used', '{"age": 38, "gender": "male", "coverageAmount": 115000, "termYears": 18, "smoker": false, "premium": 62.10}', 'landing_page', NOW() - INTERVAL '29 hours');

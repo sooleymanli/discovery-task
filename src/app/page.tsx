@@ -62,15 +62,36 @@ export default function Home() {
       await new Promise(resolve => setTimeout(resolve, 800));
     }
     
-    const p = calculatePremiumEstimate({
-      age: data.age,
-      gender: data.gender,
-      coverageAmount: data.coverageAmount,
-      termYears: data.termYears,
-      smoker: data.smoker,
-      config: calcConfig ?? defaultCalculatorConfig,
-    });
-    
+    // Server-side calculation and logging
+    let p = 0;
+    try {
+      const res = await fetch('/api/calc/quote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          age: data.age,
+          gender: data.gender,
+          coverageAmount: data.coverageAmount,
+          termYears: data.termYears,
+          smoker: data.smoker,
+          source: 'landing',
+        }),
+      });
+      const j = await res.json();
+      if (!res.ok) throw new Error(j.error || 'Calculation failed');
+      p = Number(j.premium) || 0;
+    } catch (_err) {
+      // Fallback to local calculation if API fails
+      p = calculatePremiumEstimate({
+        age: data.age,
+        gender: data.gender,
+        coverageAmount: data.coverageAmount,
+        termYears: data.termYears,
+        smoker: data.smoker,
+        config: calcConfig ?? defaultCalculatorConfig,
+      });
+    }
+
     setPremium(p);
     setIsCalculating(false);
     setShowResult(true);
@@ -80,26 +101,7 @@ export default function Home() {
       setShowResult(false);
     }, 10000);
 
-    // Log calculator usage to analytics
-    try {
-      await fetch('/api/analytics', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          event_type: 'calculator_used',
-          event_properties: {
-            age: data.age,
-            gender: data.gender,
-            coverageAmount: data.coverageAmount,
-            termYears: data.termYears,
-            smoker: data.smoker,
-            premium: p,
-          },
-        }),
-      });
-    } catch (error) {
-      console.error('Failed to log calculator usage:', error);
-    }
+    // Analytics logging is now handled on the server via calculator_quote_logs
   };
 
   // Auto-calculate on change (debounced)

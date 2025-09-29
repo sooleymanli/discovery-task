@@ -78,8 +78,8 @@ export default function AgentsPage() {
       setMessage('Agent dəvəti göndərildi');
       setForm({ fullName: '', email: '', phone: '', chatId: '' });
       await loadAgents();
-    } catch (err: any) {
-      setMessage(err.message);
+    } catch (err: unknown) {
+      setMessage(err instanceof Error ? err.message : 'Xəta baş verdi');
     } finally {
       setLoading(false);
     }

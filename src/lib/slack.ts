@@ -1,6 +1,6 @@
 type SlackPayload = {
   text: string;
-  blocks?: any[];
+  blocks?: unknown[];
 };
 
 export async function postToSlack(payload: SlackPayload | string) {

@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     // Notify superadmin if changer is agent
     if (changerProfile?.role === 'agent') {
       const { data: superadmins } = await supabase.from('profiles').select('email').eq('role', 'superadmin');
-      const toList = (superadmins ?? []).map((s: any) => s.email).filter(Boolean);
+      const toList = (superadmins ?? []).map((s: { email: string }) => s.email).filter(Boolean);
       if (toList.length > 0) {
         await sendMail({
           to: toList.join(','),
@@ -57,8 +57,9 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ ok: true });
-  } catch (err: any) {
-    return NextResponse.json({ error: err?.message ?? 'Unknown error' }, { status: 500 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 

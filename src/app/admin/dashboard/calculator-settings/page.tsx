@@ -153,7 +153,7 @@ export default function CalculatorSettingsPage() {
     setSaving(false);
   };
 
-  const updateConfig = (field: keyof CalculatorConfig, value: any) => {
+  const updateConfig = (field: keyof CalculatorConfig, value: unknown) => {
     if (!editingConfig) return;
     setEditingConfig({ ...editingConfig, [field]: value });
   };

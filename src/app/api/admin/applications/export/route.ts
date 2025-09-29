@@ -80,12 +80,13 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'Unsupported format' }, { status: 400 });
     }
 
-  } catch (err: any) {
-    return NextResponse.json({ error: err?.message ?? 'Unknown error' }, { status: 500 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
-function exportToExcel(data: any[]) {
+function exportToExcel(data: unknown[]) {
   const headers = [
     'ID',
     'Tarix',
@@ -102,7 +103,7 @@ function exportToExcel(data: any[]) {
     'Qeydlər'
   ];
 
-  const rows = data.map(app => [
+  const rows = data.map((app: any) => [
     app.id,
     new Date(app.created_at).toLocaleString('az-AZ'),
     app.full_name,
@@ -133,7 +134,7 @@ function exportToExcel(data: any[]) {
   });
 }
 
-function exportToCSV(data: any[]) {
+function exportToCSV(data: unknown[]) {
   return exportToExcel(data); // Same implementation for now
 }
 

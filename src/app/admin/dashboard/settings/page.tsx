@@ -108,18 +108,16 @@ export default function SettingsPage() {
   if (roleLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <motion.div 
-          className="flex flex-col items-center space-y-4"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+        <div className="flex flex-col items-center gap-4">
           <div className="relative">
-            <div className="w-12 h-12 border-4 border-cyan-200 rounded-full animate-spin"></div>
-            <div className="absolute top-0 left-0 w-12 h-12 border-4 border-transparent border-t-cyan-500 rounded-full animate-spin"></div>
+            <div className="w-12 h-12 border-4 border-cyan-200 border-t-cyan-500 rounded-full animate-spin"></div>
+            <div className="absolute inset-0 w-12 h-12 border-4 border-transparent border-t-teal-500 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
           </div>
-          <p className="text-cyan-600 font-medium">Yüklənir...</p>
-        </motion.div>
+          <div className="text-center">
+            <p className="text-gray-700 font-semibold text-lg">Yüklənir...</p>
+            <p className="text-gray-500 text-sm mt-1">Zəhmət olmasa gözləyin</p>
+          </div>
+        </div>
       </div>
     );
   }

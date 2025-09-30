@@ -148,7 +148,18 @@ export default function MessagingPage() {
     }
   };
 
-  if (loading) return <div className="p-6">Yüklənir...</div>;
+  if (loading) return (
+    <div className="p-6 flex items-center justify-center h-64">
+      <div className="flex flex-col items-center gap-4">
+        <div className="relative">
+          <div className="w-12 h-12 border-4 border-cyan-200 border-t-cyan-500 rounded-full animate-spin"></div>
+          <div className="absolute inset-0 w-12 h-12 border-4 border-transparent border-t-teal-500 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
+        </div>
+        <div className="text-cyan-700 font-semibold">Yüklənir...</div>
+        <div className="text-xs text-gray-500">Mesajlaşdırma paneli hazırlanır</div>
+      </div>
+    </div>
+  );
   if (role !== 'superadmin') return <div className="p-6 text-red-600">Giriş icazəsi yoxdur</div>;
 
   return (

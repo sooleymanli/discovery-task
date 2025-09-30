@@ -32,7 +32,7 @@ export async function POST(req: Request) {
     // Prefer service client for anonymous public submissions to avoid RLS issues
     const supabase = createSupabaseServiceClient();
 
-    const { error } = await supabase.from('applications').insert({
+    const { data: inserted, error } = await supabase.from('applications').insert({
       full_name: data.fullName,
       email: data.email,
       phone: data.phone,
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
       premium_estimate: null,
       status: 'pending',
       source: 'web',
-    });
+    }).select('id').single();
 
     if (error) throw error;
 
@@ -54,7 +54,12 @@ export async function POST(req: Request) {
     await sendMail({
       to: data.email,
       subject: 'Müraciətiniz üçün təşəkkürlər',
-      html: `<p>Sizin müraciətiniz alındı. Tezliklə sizinlə əlaqə saxlanılacaq.</p>`,
+      html: `<div>
+        <p>Sizin müraciətiniz alındı. Tezliklə sizinlə əlaqə saxlanılacaq.</p>
+        <p><strong>Müraciət ID:</strong> ${inserted?.id}</p>
+        <p>Portala keçid: <a href="${process.env.APP_BASE_URL || ''}/portal" target="_blank" rel="noopener">${process.env.APP_BASE_URL || ''}/portal</a></p>
+        <p>Portala daxil olmaq üçün Müraciət ID və emailinizi istifadə edin.</p>
+      </div>`,
     });
 
     await postToSlack({
@@ -78,7 +83,7 @@ export async function POST(req: Request) {
       text: `🆕 Yeni müraciət\nAd: ${data.fullName}\nEmail: ${data.email}\nTelefon: ${data.phone ?? '-'}\nYaş: ${data.age}\nCins: ${data.gender}\nMəbləğ: ${data.coverageAmount}\nMüddət: ${data.termYears}\nSiqaret: ${data.smoker ? 'Bəli' : 'Xeyr'}`,
     });
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, applicationId: inserted?.id });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Unknown error';
     return NextResponse.json({ error: message }, { status: 400 });

@@ -62,6 +62,11 @@ export function SiteHeader() {
               Suallar
             </Link>
           </motion.div>
+          <motion.div whileHover={{ y: -2 }}>
+            <Link href="/portal" className="text-gray-700 hover:text-cyan-600 transition-colors font-medium">
+              Müraciəti izlə
+            </Link>
+          </motion.div>
 
           <Link href="/apply" className="inline-block">
             <motion.div
@@ -148,6 +153,15 @@ export function SiteHeader() {
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Suallar
+                </Link>
+              </motion.div>
+              <motion.div whileHover={{ x: 5 }}>
+                <Link
+                  href="/portal"
+                  className="block text-gray-700 hover:text-cyan-600 transition-colors font-medium py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Müraciəti izlə
                 </Link>
               </motion.div>
               <motion.div

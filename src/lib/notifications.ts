@@ -68,6 +68,7 @@ export async function notifyNewApplication(applicationId: string, applicantName:
 export async function notifyStatusChange(applicationId: string, applicantName: string, oldStatus: string, newStatus: string, agentId?: string) {
   const statusText = {
     'pending': 'Gözləmədə',
+    'assigned': 'Gözləmədə',
     'in_progress': 'Təsdiqlənib', 
     'closed': 'İmtina olunub'
   };

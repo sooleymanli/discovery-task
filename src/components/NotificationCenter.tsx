@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createSupabaseBrowserClient } from '@/lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -19,39 +19,67 @@ export function NotificationCenter() {
   const [isOpen, setIsOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const supabase = createSupabaseBrowserClient();
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    // Load notifications
-    const loadNotifications = async () => {
+    // Identify current user then load notifications
+    const init = async () => {
+      const { data: userData } = await supabase.auth.getUser();
+      const uid = userData.user?.id || null;
+      setUserId(uid);
+
       const { data } = await supabase
         .from('notifications')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(20);
-      
+        .limit(50);
       if (data) {
         setNotifications(data);
         setUnreadCount(data.filter(n => !n.read).length);
       }
+
+      // Realtime channel for this user's notifications
+      if (uid) {
+        const channel = supabase
+          .channel(`notifications-${uid}`)
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications', filter: `target_user_id=eq.${uid}` }, (payload) => {
+            const newRow = (payload.new || payload.record) as Notification | null;
+            if (!newRow) return;
+            setNotifications(prev => {
+              switch (payload.eventType) {
+                case 'INSERT':
+                  return [newRow, ...prev];
+                case 'UPDATE':
+                  return prev.map(n => n.id === newRow.id ? newRow : n);
+                case 'DELETE':
+                  return prev.filter(n => n.id !== (payload.old as any)?.id);
+                default:
+                  return prev;
+              }
+            });
+            // Recompute unread count for accuracy
+            setUnreadCount(curr => {
+              const list = (payload.eventType === 'DELETE')
+                ? notifications.filter(n => n.id !== (payload.old as any)?.id)
+                : (payload.eventType === 'UPDATE')
+                  ? notifications.map(n => n.id === (newRow as any).id ? (newRow as Notification) : n)
+                  : [newRow as Notification, ...notifications];
+              return list.filter(n => !n.read).length;
+            });
+          })
+          .subscribe();
+
+        return () => {
+          supabase.removeChannel(channel);
+        };
+      }
     };
 
-    loadNotifications();
-
-    // Set up real-time subscription
-    const channel = supabase
-      .channel('notifications')
-      .on('postgres_changes', 
-        { event: 'INSERT', schema: 'public', table: 'notifications' },
-        (payload) => {
-          const newNotification = payload.new as Notification;
-          setNotifications(prev => [newNotification, ...prev]);
-          setUnreadCount(prev => prev + 1);
-        }
-      )
-      .subscribe();
-
+    const cleanupPromise = init();
     return () => {
-      supabase.removeChannel(channel);
+      // cleanup handled in channel subscribe return
+      void cleanupPromise;
     };
   }, [supabase]);
 
@@ -116,11 +144,31 @@ export function NotificationCenter() {
     }
   };
 
+  // Close on outside click
+  useEffect(() => {
+    if (!isOpen) return;
+    const onClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node | null;
+      if (containerRef.current && target && !containerRef.current.contains(target)) {
+        setIsOpen(false);
+      }
+    };
+    const onEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsOpen(false);
+    };
+    document.addEventListener('mousedown', onClickOutside);
+    document.addEventListener('keydown', onEscape);
+    return () => {
+      document.removeEventListener('mousedown', onClickOutside);
+      document.removeEventListener('keydown', onEscape);
+    };
+  }, [isOpen]);
+
   return (
-    <div className="relative">
+    <div className="relative" ref={containerRef}>
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 text-cyan-600 hover:bg-cyan-50 rounded-xl transition-all duration-200 hover:shadow-md"
+        className="relative p-2 text-gray-900 hover:bg-cyan-50 rounded-xl transition-all duration-200 hover:shadow-md"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
@@ -135,7 +183,7 @@ export function NotificationCenter() {
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 500, damping: 30 }}
             >
-              {unreadCount > 9 ? '9+' : unreadCount}
+              {unreadCount}
             </motion.span>
           )}
         </div>
@@ -164,7 +212,7 @@ export function NotificationCenter() {
                 {unreadCount > 0 && (
                   <motion.button
                     onClick={markAllAsRead}
-                    className="text-sm text-cyan-600 hover:text-cyan-800 font-medium px-3 py-1 rounded-lg hover:bg-cyan-100 transition-colors duration-200"
+                    className="text-sm text-gray-900 hover:text-cyan-800 font-semibold px-3 py-1 rounded-lg hover:bg-cyan-100 transition-colors duration-200"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -188,7 +236,7 @@ export function NotificationCenter() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM4 19h6v-6H4v6zM4 5h6V1H4v4zM15 3h5v6h-5V3z" />
                     </svg>
                   </div>
-                  <p className="text-gray-500 font-medium">Bildiriş yoxdur</p>
+                  <p className="text-gray-900 font-bold">Bildiriş yoxdur</p>
                   <p className="text-sm text-gray-400 mt-1">Yeni bildirişlər burada görünəcək</p>
                 </motion.div>
               ) : (
@@ -210,14 +258,14 @@ export function NotificationCenter() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between">
-                          <h4 className="text-sm font-semibold text-gray-900 mb-1">
+                          <h4 className="text-sm font-bold text-gray-900 mb-1">
                             {notification.title}
                           </h4>
                           {!notification.read && (
                             <div className="w-2 h-2 bg-gradient-to-r from-cyan-500 to-teal-500 rounded-full flex-shrink-0 mt-2"></div>
                           )}
                         </div>
-                        <p className="text-sm text-gray-600 mb-2 leading-relaxed">
+                        <p className="text-sm font-medium text-gray-900 mb-2 leading-relaxed">
                           {notification.message}
                         </p>
                         <p className="text-xs text-gray-400">

@@ -166,7 +166,16 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-cyan-600">Yüklənir...</div>
+        <div className="flex flex-col items-center gap-4">
+          <div className="relative">
+            <div className="w-12 h-12 border-4 border-cyan-200 border-t-cyan-500 rounded-full animate-spin"></div>
+            <div className="absolute inset-0 w-12 h-12 border-4 border-transparent border-t-teal-500 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
+          </div>
+          <div className="text-center">
+            <p className="text-gray-700 font-semibold text-lg">Yüklənir...</p>
+            <p className="text-gray-500 text-sm mt-1">Zəhmət olmasa gözləyin</p>
+          </div>
+        </div>
       </div>
     );
   }
@@ -289,7 +298,6 @@ export default function DashboardPage() {
              
             </>
           )}
-
 
 
             <div className="group relative overflow-hidden rounded-2xl border border-cyan-100 bg-gradient-to-br from-cyan-50 to-teal-50 p-6 shadow-lg hover:shadow-xl transition-all duration-300">

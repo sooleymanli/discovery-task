@@ -1,12 +1,11 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@/lib/supabase';
 
 export default function PortalPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [applicationId, setApplicationId] = useState('');
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -118,16 +117,18 @@ export default function PortalPage() {
 
   // On first load, read applicationId and email from search params and auto-load
   useEffect(() => {
-    const id = searchParams.get('applicationId') || '';
-    const em = searchParams.get('email') || '';
-    if (id && em) {
-      setApplicationId(id);
-      setEmail(em);
-      // Defer to ensure state set before fetch
-      setTimeout(() => {
-        loadStatus(id, em);
-      }, 0);
-    }
+    try {
+      const sp = new URLSearchParams(window.location.search);
+      const id = sp.get('applicationId') || '';
+      const em = sp.get('email') || '';
+      if (id && em) {
+        setApplicationId(id);
+        setEmail(em);
+        setTimeout(() => {
+          loadStatus(id, em);
+        }, 0);
+      }
+    } catch {}
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

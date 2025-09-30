@@ -44,28 +44,20 @@ export function NotificationCenter() {
         const channel = supabase
           .channel(`notifications-${uid}`)
           .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications', filter: `target_user_id=eq.${uid}` }, (payload) => {
-            const newRow = (payload.new || payload.record) as Notification | null;
-            if (!newRow) return;
             setNotifications(prev => {
-              switch (payload.eventType) {
-                case 'INSERT':
-                  return [newRow, ...prev];
-                case 'UPDATE':
-                  return prev.map(n => n.id === newRow.id ? newRow : n);
-                case 'DELETE':
-                  return prev.filter(n => n.id !== (payload.old as any)?.id);
-                default:
-                  return prev;
+              let next = prev;
+              if (payload.eventType === 'INSERT') {
+                const inserted = payload.new as Notification;
+                next = [inserted, ...prev];
+              } else if (payload.eventType === 'UPDATE') {
+                const updated = payload.new as Notification;
+                next = prev.map(n => n.id === updated.id ? updated : n);
+              } else if (payload.eventType === 'DELETE') {
+                const oldId = (payload.old as { id: string } | null)?.id;
+                next = oldId ? prev.filter(n => n.id !== oldId) : prev;
               }
-            });
-            // Recompute unread count for accuracy
-            setUnreadCount(curr => {
-              const list = (payload.eventType === 'DELETE')
-                ? notifications.filter(n => n.id !== (payload.old as any)?.id)
-                : (payload.eventType === 'UPDATE')
-                  ? notifications.map(n => n.id === (newRow as any).id ? (newRow as Notification) : n)
-                  : [newRow as Notification, ...notifications];
-              return list.filter(n => !n.read).length;
+              setUnreadCount(next.filter(n => !n.read).length);
+              return next;
             });
           })
           .subscribe();

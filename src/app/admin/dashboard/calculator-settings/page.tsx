@@ -5,8 +5,10 @@ import { useRouter } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@/lib/supabase';
 import { CalculatorConfig } from '@/lib/calculator';
 import { motion } from 'framer-motion';
+import { tClient, useLocale } from '@/lib/i18n/client';
 
 export default function CalculatorSettingsPage() {
+  const [locale] = useLocale();
   const router = useRouter();
   const supabase = createSupabaseBrowserClient();
   const [loading, setLoading] = useState<boolean>(false);
@@ -103,7 +105,7 @@ export default function CalculatorSettingsPage() {
         version: 'v1.0',
         is_active: true,
         effective_from: new Date().toISOString(),
-        description: 'İlk default konfiqurasiya',
+        description: tClient('calc_settings_default_desc', locale),
         config: defaultConfig
       });
 
@@ -137,7 +139,7 @@ export default function CalculatorSettingsPage() {
         version: `v${Date.now()}`,
         is_active: true,
         effective_from: new Date().toISOString(),
-        description: 'Admin tərəfindən yeniləndi',
+        description: tClient('calc_settings_admin_update', locale),
         config: editingConfig
       });
 
@@ -147,7 +149,7 @@ export default function CalculatorSettingsPage() {
       return;
     }
 
-    setSuccess('Kalkulyator qaydaları yeniləndi');
+    setSuccess(tClient('calc_settings_success', locale));
     setActiveConfig(editingConfig);
     await loadConfigs();
     setSaving(false);
@@ -199,8 +201,8 @@ export default function CalculatorSettingsPage() {
             <div className="absolute inset-0 w-12 h-12 border-4 border-transparent border-t-teal-500 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
           </div>
           <div className="text-center">
-            <p className="text-gray-700 font-semibold text-lg">Yüklənir...</p>
-            <p className="text-gray-500 text-sm mt-1">Zəhmət olmasa gözləyin</p>
+            <p className="text-gray-700 font-semibold text-lg">{tClient('dashboard_loading', locale)}</p>
+            <p className="text-gray-500 text-sm mt-1">{tClient('dashboard_wait', locale)}</p>
           </div>
         </div>
       </div>
@@ -216,9 +218,9 @@ export default function CalculatorSettingsPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
             </svg>
           </div>
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">Giriş İcazəsi Yoxdur</h3>
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">{tClient('agents_no_access', locale)}</h3>
           <p className="text-gray-600 mb-8 max-w-md mx-auto">
-            Bu səhifəyə giriş icazəniz yoxdur. Yalnız superadmin istifadəçiləri kalkulyator tənzimlərini idarə edə bilər.
+            {tClient('calc_settings_no_access_desc', locale)}
           </p>
           <motion.button 
             onClick={() => router.push('/admin/dashboard')} 
@@ -230,7 +232,7 @@ export default function CalculatorSettingsPage() {
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
-              Geri qayıt
+              {tClient('calc_settings_back', locale)}
             </div>
           </motion.button>
         </div>
@@ -247,8 +249,8 @@ export default function CalculatorSettingsPage() {
             <div className="absolute inset-0 w-12 h-12 border-4 border-transparent border-t-teal-500 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
           </div>
           <div className="text-center">
-            <p className="text-gray-700 font-semibold text-lg">Yüklənir...</p>
-            <p className="text-gray-500 text-sm mt-1">Zəhmət olmasa gözləyin</p>
+            <p className="text-gray-700 font-semibold text-lg">{tClient('dashboard_loading', locale)}</p>
+            <p className="text-gray-500 text-sm mt-1">{tClient('dashboard_wait', locale)}</p>
           </div>
         </div>
       </div>
@@ -265,19 +267,19 @@ export default function CalculatorSettingsPage() {
             <div>
               <div className="inline-flex items-center rounded-full bg-gradient-to-r from-cyan-50 to-teal-50 px-4 py-2 text-sm font-medium text-cyan-700 border border-cyan-200 mb-4">
                 <span className="w-2 h-2 bg-cyan-500 rounded-full mr-2 animate-pulse"></span>
-                PlanB Kalkulyator
+                {tClient('brand_name', locale)} {tClient('calc_badge', locale)}
               </div>
               <h1 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-gray-900 via-cyan-900 to-teal-900 bg-clip-text text-transparent">
-                Kalkulyator Tənzimləmələri
+                {tClient('calc_settings_title', locale)}
               </h1>
               <p className="text-lg text-gray-700 mt-2">
-                PlanB kalkulyatorunun hesablama qaydalarını tənzimləyin
+                {tClient('calc_settings_subtitle', locale)}
               </p>
             </div>
             
             <div className="flex items-center gap-4">
               <div className="text-right">
-                <div className="text-sm text-gray-500">Aktiv konfiqurasiya</div>
+                <div className="text-sm text-gray-500">{tClient('calc_settings_active', locale)}</div>
                 <div className="text-2xl font-bold text-cyan-600">{activeConfig ? '1' : '0'}</div>
               </div>
               <div className="flex items-center gap-3">
@@ -292,7 +294,7 @@ export default function CalculatorSettingsPage() {
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                       </svg>
-                      Default Yarat
+                      {tClient('calc_settings_create_default', locale)}
                     </div>
                   </motion.button>
                 )}
@@ -304,7 +306,7 @@ export default function CalculatorSettingsPage() {
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
-                    Yenilə
+                    {tClient('calc_settings_refresh', locale)}
                   </div>
                 </button>
               </div>
@@ -322,33 +324,33 @@ export default function CalculatorSettingsPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
               </svg>
             </div>
-            <h2 className="text-xl font-bold text-gray-900">Hesablama Qaydası</h2>
+            <h2 className="text-xl font-bold text-gray-900">{tClient('calc_settings_calculation', locale)}</h2>
           </div>
           <div className="bg-white/60 rounded-xl p-4 border border-cyan-200 mb-4">
             <p className="text-lg font-bold text-gray-900 text-center">
-              Aylıq Ödəniş = Əsas Tarif × (Sığorta Məbləği ÷ 10,000) × Yaş Əmsalı × Cins Əmsalı × Müddət Əmsalı × Siqaret Əmsalı
+              {tClient('calc_settings_formula', locale)}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="flex items-center gap-3 p-3 bg-white/60 rounded-xl border border-cyan-200">
               <div className="w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center text-white text-sm font-bold">1.0</div>
               <div>
-                <p className="font-semibold text-gray-900">Əmsal 1.0</p>
-                <p className="text-sm text-gray-600">Qiymət dəyişmir (100%)</p>
+                <p className="font-semibold text-gray-900">{tClient('calc_settings_factor_1', locale)}</p>
+                <p className="text-sm text-gray-600">{tClient('calc_settings_factor_1_desc', locale)}</p>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 bg-white/60 rounded-xl border border-cyan-200">
               <div className="w-8 h-8 bg-teal-500 rounded-full flex items-center justify-center text-white text-sm font-bold">1.5</div>
               <div>
-                <p className="font-semibold text-gray-900">Əmsal 1.5</p>
-                <p className="text-sm text-gray-600">Qiymət 50% artır (150%)</p>
+                <p className="font-semibold text-gray-900">{tClient('calc_settings_factor_15', locale)}</p>
+                <p className="text-sm text-gray-600">{tClient('calc_settings_factor_15_desc', locale)}</p>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 bg-white/60 rounded-xl border border-cyan-200">
               <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-white text-sm font-bold">0.8</div>
               <div>
-                <p className="font-semibold text-gray-900">Əmsal 0.8</p>
-                <p className="text-sm text-gray-600">Qiymət 20% azalır (80%)</p>
+                <p className="font-semibold text-gray-900">{tClient('calc_settings_factor_08', locale)}</p>
+                <p className="text-sm text-gray-600">{tClient('calc_settings_factor_08_desc', locale)}</p>
               </div>
             </div>
           </div>
@@ -396,11 +398,11 @@ export default function CalculatorSettingsPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-900">Əsas Tarif</h3>
+              <h3 className="text-xl font-bold text-gray-900">{tClient('calc_settings_base_tariff', locale)}</h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">Hər 10,000 AZN üçün aylıq tarif</label>
+                <label className="block text-sm font-semibold text-gray-700">{tClient('calc_settings_base_rate', locale)}</label>
                 <input
                   type="number"
                   step="0.01"
@@ -409,7 +411,7 @@ export default function CalculatorSettingsPage() {
                   className="w-full px-4 py-3 border border-cyan-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 bg-white/80"
                   placeholder="0.00"
                 />
-                <p className="text-xs text-gray-500">Bu məbləğ hər 10,000 AZN sığorta məbləği üçün aylıq ödənişdir</p>
+                <p className="text-xs text-gray-500">{tClient('calc_settings_base_rate_desc', locale)}</p>
               </div>
             </div>
           </div>
@@ -423,7 +425,7 @@ export default function CalculatorSettingsPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900">Yaş Əmsalları</h3>
+                <h3 className="text-xl font-bold text-gray-900">{tClient('calc_settings_age_factors', locale)}</h3>
               </div>
               <motion.button
                 onClick={addAgeMultiplier}
@@ -435,7 +437,7 @@ export default function CalculatorSettingsPage() {
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
-                  Əlavə et
+                  {tClient('calc_settings_add', locale)}
                 </div>
               </motion.button>
             </div>
@@ -450,7 +452,7 @@ export default function CalculatorSettingsPage() {
                 >
                   <div className="flex-1 grid grid-cols-3 gap-4">
                     <div className="space-y-1">
-                      <label className="block text-xs font-semibold text-gray-600">Min yaş</label>
+                      <label className="block text-xs font-semibold text-gray-600">{tClient('calc_settings_min_age', locale)}</label>
                       <input
                         type="number"
                         placeholder="18"
@@ -464,7 +466,7 @@ export default function CalculatorSettingsPage() {
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="block text-xs font-semibold text-gray-600">Max yaş</label>
+                      <label className="block text-xs font-semibold text-gray-600">{tClient('calc_settings_max_age', locale)}</label>
                       <input
                         type="number"
                         placeholder="25"
@@ -478,7 +480,7 @@ export default function CalculatorSettingsPage() {
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="block text-xs font-semibold text-gray-600">Əmsal</label>
+                      <label className="block text-xs font-semibold text-gray-600">{tClient('calc_settings_factor', locale)}</label>
                       <input
                         type="number"
                         step="0.01"
@@ -503,7 +505,7 @@ export default function CalculatorSettingsPage() {
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                       </svg>
-                      Sil
+                      {tClient('calc_settings_delete', locale)}
                     </div>
                   </motion.button>
                 </motion.div>
@@ -519,11 +521,11 @@ export default function CalculatorSettingsPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-900">Cins Əmsalları</h3>
+              <h3 className="text-xl font-bold text-gray-900">{tClient('calc_settings_gender_factors', locale)}</h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">Kişi əmsalı</label>
+                <label className="block text-sm font-semibold text-gray-700">{tClient('calc_settings_male_factor', locale)}</label>
                 <input
                   type="number"
                   step="0.01"
@@ -535,10 +537,10 @@ export default function CalculatorSettingsPage() {
                   className="w-full px-4 py-3 border border-cyan-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 bg-white/80"
                   placeholder="1.0"
                 />
-                <p className="text-xs text-gray-500">Kişi müştərilər üçün əmsal</p>
+                <p className="text-xs text-gray-500">{tClient('calc_settings_male_desc', locale)}</p>
               </div>
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">Qadın əmsalı</label>
+                <label className="block text-sm font-semibold text-gray-700">{tClient('calc_settings_female_factor', locale)}</label>
                 <input
                   type="number"
                   step="0.01"
@@ -550,7 +552,7 @@ export default function CalculatorSettingsPage() {
                   className="w-full px-4 py-3 border border-cyan-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 bg-white/80"
                   placeholder="1.0"
                 />
-                <p className="text-xs text-gray-500">Qadın müştərilər üçün əmsal</p>
+                <p className="text-xs text-gray-500">{tClient('calc_settings_female_desc', locale)}</p>
               </div>
             </div>
           </div>
@@ -563,11 +565,11 @@ export default function CalculatorSettingsPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-900">Siqaret Çəkmə Əmsalı</h3>
+              <h3 className="text-xl font-bold text-gray-900">{tClient('calc_settings_smoker_factor', locale)}</h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">Siqaret çəkənlər üçün əmsal</label>
+                <label className="block text-sm font-semibold text-gray-700">{tClient('calc_settings_smoker_label', locale)}</label>
                 <input
                   type="number"
                   step="0.01"
@@ -576,7 +578,7 @@ export default function CalculatorSettingsPage() {
                   className="w-full px-4 py-3 border border-cyan-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 bg-white/80"
                   placeholder="1.5"
                 />
-                <p className="text-xs text-gray-500">Siqaret çəkən müştərilər üçün əlavə əmsal</p>
+                <p className="text-xs text-gray-500">{tClient('calc_settings_smoker_desc', locale)}</p>
               </div>
             </div>
           </div>
@@ -590,7 +592,7 @@ export default function CalculatorSettingsPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900">Müddət Əmsalları</h3>
+                <h3 className="text-xl font-bold text-gray-900">{tClient('calc_settings_term_factors', locale)}</h3>
               </div>
               <motion.button
                 onClick={addTermMultiplier}
@@ -602,7 +604,7 @@ export default function CalculatorSettingsPage() {
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
-                  Əlavə et
+                  {tClient('calc_settings_add', locale)}
                 </div>
               </motion.button>
             </div>
@@ -617,7 +619,7 @@ export default function CalculatorSettingsPage() {
                 >
                   <div className="flex-1 grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="block text-xs font-semibold text-gray-600">Müddət (il)</label>
+                      <label className="block text-xs font-semibold text-gray-600">{tClient('calc_settings_term', locale)}</label>
                       <input
                         type="number"
                         placeholder="10"
@@ -631,7 +633,7 @@ export default function CalculatorSettingsPage() {
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="block text-xs font-semibold text-gray-600">Əmsal</label>
+                      <label className="block text-xs font-semibold text-gray-600">{tClient('calc_settings_factor', locale)}</label>
                       <input
                         type="number"
                         step="0.01"
@@ -656,7 +658,7 @@ export default function CalculatorSettingsPage() {
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                       </svg>
-                      Sil
+                      {tClient('calc_settings_delete', locale)}
                     </div>
                   </motion.button>
                 </motion.div>
@@ -680,14 +682,14 @@ export default function CalculatorSettingsPage() {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Yadda saxlanılır...
+                    {tClient('calc_settings_saving', locale)}
                   </>
                 ) : (
                   <>
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                    Qaydaları yenilə
+                    {tClient('calc_settings_update', locale)}
                   </>
                 )}
               </div>

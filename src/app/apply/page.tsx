@@ -7,6 +7,7 @@ import { useSearchParams } from 'next/navigation';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
+import { tClient, useLocale } from '@/lib/i18n/client';
 
 const schema = z.object({
   fullName: z.string().min(2),
@@ -23,6 +24,7 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 function ApplyPageContent() {
+  const [locale] = useLocale();
   const search = useSearchParams();
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -71,7 +73,7 @@ function ApplyPageContent() {
         setTimeout(() => setIsError(false), 5000);
       }
     } catch (error) {
-      setErrorMessage('Xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.');
+      setErrorMessage(tClient('apply_error_default', locale));
       setIsError(true);
       setTimeout(() => setIsError(false), 5000);
     }
@@ -96,14 +98,14 @@ function ApplyPageContent() {
         >
           <div className="inline-flex items-center rounded-full bg-gradient-to-r from-cyan-50 to-teal-50 px-4 py-2 text-sm font-medium text-cyan-700 border border-cyan-200 mb-6">
             <span className="w-2 h-2 bg-cyan-500 rounded-full mr-2 animate-pulse"></span>
-            PlanB Müraciət
+            {tClient('apply_badge', locale)}
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-gray-900 via-cyan-900 to-teal-900 bg-clip-text text-transparent mb-4">
-            PlanB al - İndi başla!
+            {tClient('apply_title', locale)}
           </h1>
           <p className="text-xl text-gray-700 max-w-2xl mx-auto">
-            <span className="font-semibold text-cyan-600">Plan A ilə risk alırsan, PlanB var!</span> 
-            Gənclər üçün xüsusi hazırlanmış sığorta həlli.
+            <span className="font-semibold text-cyan-600">{tClient('slogan', locale)}</span> 
+            {tClient('apply_subtitle', locale)}
           </p>
         </motion.div>
 
@@ -127,8 +129,8 @@ function ApplyPageContent() {
                 </svg>
               </motion.div>
               <div className="ml-4">
-                <h3 className="text-lg font-semibold text-emerald-900">Müraciət qəbul edildi!</h3>
-                <p className="text-emerald-700">PlanB komandası 24 saat ərzində sizinlə əlaqə saxlayacaq. Emailinizi yoxlayın.</p>
+                <h3 className="text-lg font-semibold text-emerald-900">{tClient('apply_success_title', locale)}</h3>
+                <p className="text-emerald-700">{tClient('apply_success_desc', locale)}</p>
               </div>
             </div>
           </motion.div>
@@ -154,7 +156,7 @@ function ApplyPageContent() {
                 </svg>
               </motion.div>
               <div className="ml-4">
-                <h3 className="text-lg font-semibold text-red-900">Xəta baş verdi</h3>
+                <h3 className="text-lg font-semibold text-red-900">{tClient('apply_error_title', locale)}</h3>
                 <p className="text-red-700">{errorMessage}</p>
               </div>
             </div>
@@ -175,15 +177,15 @@ function ApplyPageContent() {
               <div className="md:col-span-2">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                   <span className="w-8 h-8 bg-gradient-to-r from-cyan-500 to-teal-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">1</span>
-                  Şəxsi məlumatlar
+                  {tClient('apply_section1', locale)}
                 </h3>
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">Ad Soyad *</label>
+                <label className="block text-sm font-semibold text-gray-700">{tClient('apply_full_name', locale)} *</label>
                 <input 
                   className="w-full px-4 py-3 border border-cyan-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 bg-white/80" 
-                  placeholder="Adınızı daxil edin"
+                  placeholder={tClient('apply_full_name_ph', locale)}
                   {...register('fullName')} 
                 />
                 {errors.fullName && (
@@ -201,7 +203,7 @@ function ApplyPageContent() {
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">Email *</label>
+                <label className="block text-sm font-semibold text-gray-700">{tClient('apply_email', locale)} *</label>
                 <input 
                   type="email" 
                   className="w-full px-4 py-3 border border-cyan-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 bg-white/80" 
@@ -223,20 +225,20 @@ function ApplyPageContent() {
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">Telefon</label>
+                <label className="block text-sm font-semibold text-gray-700">{tClient('apply_phone', locale)}</label>
                 <input 
                   className="w-full px-4 py-3 border border-cyan-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 bg-white/80" 
-                  placeholder="+994 XX XXX XX XX"
+                  placeholder={tClient('apply_phone_ph', locale)}
                   {...register('phone')} 
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">Yaş *</label>
+                <label className="block text-sm font-semibold text-gray-700">{tClient('form_age', locale)} *</label>
                 <input 
                   type="number" 
                   className="w-full px-4 py-3 border border-cyan-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 bg-white/80" 
-                  placeholder="18-65"
+                  placeholder={tClient('apply_age_ph', locale)}
                   {...register('age')} 
                 />
                 {errors.age && (
@@ -254,13 +256,13 @@ function ApplyPageContent() {
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">Cins *</label>
+                <label className="block text-sm font-semibold text-gray-700">{tClient('form_gender', locale)} *</label>
                 <select 
                   className="w-full px-4 py-3 border border-cyan-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 bg-white/80" 
                   {...register('gender')}
                 >
-                  <option value="male">Kişi</option>
-                  <option value="female">Qadın</option>
+                  <option value="male">{tClient('form_gender_m', locale)}</option>
+                  <option value="female">{tClient('form_gender_f', locale)}</option>
                 </select>
               </div>
 
@@ -268,16 +270,16 @@ function ApplyPageContent() {
               <div className="md:col-span-2 mt-8">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                   <span className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">2</span>
-                  Sığorta məlumatları
+                  {tClient('apply_section2', locale)}
                 </h3>
               </div>
 
               <div className="md:col-span-2 space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">Sığorta məbləği (AZN) *</label>
+                <label className="block text-sm font-semibold text-gray-700">{tClient('form_amount', locale)} *</label>
                 <input 
                   type="number" 
                   className="w-full px-4 py-3 border border-cyan-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 bg-white/80" 
-                  placeholder="Minimum 10,000 AZN"
+                  placeholder={tClient('form_amount_helper', locale)}
                   {...register('coverageAmount')} 
                 />
                 {errors.coverageAmount && (
@@ -295,11 +297,11 @@ function ApplyPageContent() {
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-700">Müddət (il) *</label>
+                <label className="block text-sm font-semibold text-gray-700">{tClient('form_term', locale)} *</label>
                 <input 
                   type="number" 
                   className="w-full px-4 py-3 border border-cyan-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 bg-white/80" 
-                  placeholder="10"
+                  placeholder={tClient('apply_term_ph', locale)}
                   {...register('termYears')} 
                 />
                 {errors.termYears && (
@@ -320,7 +322,7 @@ function ApplyPageContent() {
               <div className="md:col-span-2 mt-8">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                   <span className="w-8 h-8 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">3</span>
-                  Əlavə məlumatlar
+                  {tClient('apply_section3', locale)}
                 </h3>
               </div>
 
@@ -333,7 +335,7 @@ function ApplyPageContent() {
                     {...register('smoker')} 
                   />
                   <label htmlFor="smoker" className="text-sm font-medium text-gray-700">
-                    Siqaret çəkirəm
+                    {tClient('apply_smoker_label', locale)}
                   </label>
                 </div>
               </div>
@@ -347,8 +349,7 @@ function ApplyPageContent() {
                     {...register('consent')} 
                   />
                   <label htmlFor="consent" className="text-sm font-medium text-gray-700">
-                    <span className="font-semibold text-cyan-600">Şərtlər və məxfilik qaydaları</span> ilə razıyam. 
-                    Məlumatlarımın PlanB tərəfindən işlənməsinə icazə verirəm.
+                    {tClient('apply_consent', locale)}
                   </label>
                 </div>
                 {errors.consent && (
@@ -380,14 +381,14 @@ function ApplyPageContent() {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
-                      PlanB yaradılır...
+                      {tClient('apply_submitting', locale)}
                     </div>
                   ) : (
                     <div className="flex items-center justify-center">
                       <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                       </svg>
-                      PlanB al - İndi başla!
+                      {tClient('apply_submit', locale)}
                     </div>
                   )}
                 </motion.button>
@@ -410,7 +411,7 @@ function ApplyPageContent() {
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
-            Ana səhifəyə qayıt
+            {tClient('apply_back', locale)}
           </Link>
         </motion.div>
       </div>
@@ -418,16 +419,21 @@ function ApplyPageContent() {
   );
 }
 
+function ApplyPageLoader() {
+  const [locale] = useLocale();
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-teal-50 to-emerald-50 flex items-center justify-center">
+      <div className="text-center">
+        <div className="w-12 h-12 border-4 border-cyan-200 rounded-full animate-spin mx-auto mb-4"></div>
+        <p className="text-cyan-600 font-medium">{tClient('loading', locale)}</p>
+      </div>
+    </div>
+  );
+}
+
 export default function ApplyPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-teal-50 to-emerald-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-cyan-200 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-cyan-600 font-medium">Yüklənir...</p>
-        </div>
-      </div>
-    }>
+    <Suspense fallback={<ApplyPageLoader />}>
       <ApplyPageContent />
     </Suspense>
   );

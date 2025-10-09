@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { createSupabaseBrowserClient } from '@/lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
+import { tClient, useLocale } from '@/lib/i18n/client';
 
 type Notification = {
   id: string;
@@ -15,6 +16,7 @@ type Notification = {
 };
 
 export function NotificationCenter() {
+  const [locale] = useLocale();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -199,7 +201,7 @@ export function NotificationCenter() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM4 19h6v-6H4v6zM4 5h6V1H4v4zM15 3h5v6h-5V3z" />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900">Bildirişlər</h3>
+                  <h3 className="text-lg font-bold text-gray-900">{tClient('nc_title', locale)}</h3>
                 </div>
                 {unreadCount > 0 && (
                   <motion.button
@@ -208,7 +210,7 @@ export function NotificationCenter() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    Hamısını oxunmuş say
+                    {tClient('nc_mark_all', locale)}
                   </motion.button>
                 )}
               </div>
@@ -228,8 +230,8 @@ export function NotificationCenter() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM4 19h6v-6H4v6zM4 5h6V1H4v4zM15 3h5v6h-5V3z" />
                     </svg>
                   </div>
-                  <p className="text-gray-900 font-bold">Bildiriş yoxdur</p>
-                  <p className="text-sm text-gray-400 mt-1">Yeni bildirişlər burada görünəcək</p>
+                  <p className="text-gray-900 font-bold">{tClient('nc_empty_title', locale)}</p>
+                  <p className="text-sm text-gray-400 mt-1">{tClient('nc_empty_desc', locale)}</p>
                 </motion.div>
               ) : (
                 notifications.map((notification, index) => (

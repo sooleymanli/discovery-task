@@ -2,8 +2,10 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { createSupabaseBrowserClient } from '@/lib/supabase';
+import { tClient, useLocale } from '@/lib/i18n/client';
 
 export default function MessagingPage() {
+  const [locale] = useLocale();
   const supabase = createSupabaseBrowserClient();
   const [role, setRole] = useState<'superadmin' | 'agent' | null>(null);
   const [loading, setLoading] = useState(true);
@@ -74,9 +76,9 @@ export default function MessagingPage() {
         }),
       });
       const j = await res.json();
-      if (!res.ok) throw new Error(j.error || 'Göndərmə alınmadı');
-      setStatus('Mesaj(lar) uğurla göndərildi');
-      setToast('Slack: Uğurla göndərildi');
+      if (!res.ok) throw new Error(j.error || tClient('msg_error', locale));
+      setStatus(tClient('msg_success_slack', locale));
+      setToast('Slack: ' + tClient('msg_success_slack', locale));
       setTimeout(() => setToast(null), 3000);
     } catch (e) {
       setStatus(e instanceof Error ? e.message : 'Xəta baş verdi');
@@ -95,9 +97,9 @@ export default function MessagingPage() {
         body: JSON.stringify({ message, sendTelegramChannel: true, mentionAgents }),
       });
       const j = await res.json();
-      if (!res.ok) throw new Error(j.error || 'Göndərmə alınmadı');
-      setStatus('Telegram kanalına göndərildi');
-      setToast('Telegram kanalına göndərildi');
+      if (!res.ok) throw new Error(j.error || tClient('msg_error', locale));
+      setStatus(tClient('msg_success_tg', locale));
+      setToast(tClient('msg_success_tg', locale));
       setTimeout(() => setToast(null), 3000);
     } catch (e) {
       setStatus(e instanceof Error ? e.message : 'Xəta baş verdi');
@@ -116,9 +118,9 @@ export default function MessagingPage() {
         body: JSON.stringify({ message, sendTelegramToAgents: true, agentIdsForTelegram: selectedTelegramAgents, mentionAgents }),
       });
       const j = await res.json();
-      if (!res.ok) throw new Error(j.error || 'Göndərmə alınmadı');
-      setStatus('Agentlərin Telegram-ına göndərildi');
-      setToast('Agentlərin Telegram-ına göndərildi');
+      if (!res.ok) throw new Error(j.error || tClient('msg_error', locale));
+      setStatus(tClient('msg_success_tg_agents', locale));
+      setToast(tClient('msg_success_tg_agents', locale));
       setTimeout(() => setToast(null), 3000);
     } catch (e) {
       setStatus(e instanceof Error ? e.message : 'Xəta baş verdi');
@@ -137,9 +139,9 @@ export default function MessagingPage() {
         body: JSON.stringify({ message, subject, sendEmailToAgents: true, agentIdsForEmail: selectedEmailAgents, mentionAgents }),
       });
       const j = await res.json();
-      if (!res.ok) throw new Error(j.error || 'Göndərmə alınmadı');
-      setStatus('Agentlərə email göndərildi');
-      setToast('Agentlərə email göndərildi');
+      if (!res.ok) throw new Error(j.error || tClient('msg_error', locale));
+      setStatus(tClient('msg_success_email', locale));
+      setToast(tClient('msg_success_email', locale));
       setTimeout(() => setToast(null), 3000);
     } catch (e) {
       setStatus(e instanceof Error ? e.message : 'Xəta baş verdi');
@@ -155,17 +157,17 @@ export default function MessagingPage() {
           <div className="w-12 h-12 border-4 border-cyan-200 border-t-cyan-500 rounded-full animate-spin"></div>
           <div className="absolute inset-0 w-12 h-12 border-4 border-transparent border-t-teal-500 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
         </div>
-        <div className="text-cyan-700 font-semibold">Yüklənir...</div>
-        <div className="text-xs text-gray-500">Mesajlaşdırma paneli hazırlanır</div>
+        <div className="text-cyan-700 font-semibold">{tClient('msg_loading', locale)}</div>
+        <div className="text-xs text-gray-500">{tClient('msg_loading_desc', locale)}</div>
       </div>
     </div>
   );
-  if (role !== 'superadmin') return <div className="p-6 text-red-600">Giriş icazəsi yoxdur</div>;
+  if (role !== 'superadmin') return <div className="p-6 text-red-600">{tClient('msg_no_access', locale)}</div>;
 
   return (
     <div className="p-6 space-y-6">
       <div className="rounded-2xl border border-cyan-100 bg-white p-6 shadow-sm">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">Mesaj Göndər</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-4">{tClient('msg_title', locale)}</h1>
         {/* Quick external links */}
         <div className="mb-4 flex flex-wrap gap-3">
           <a
@@ -202,14 +204,14 @@ export default function MessagingPage() {
 
           {/* Shared Message Input */}
           <div className="mb-4">
-            <label className="text-sm font-medium text-gray-700">Mesaj</label>
-            <textarea value={message} onChange={e => setMessage(e.target.value)} className="mt-1 w-full rounded border border-cyan-200 p-2 h-40" placeholder="Mesaj mətni..." />
+            <label className="text-sm font-medium text-gray-700">{tClient('msg_label', locale)}</label>
+            <textarea value={message} onChange={e => setMessage(e.target.value)} className="mt-1 w-full rounded border border-cyan-200 p-2 h-40" placeholder={tClient('msg_placeholder', locale)} />
           </div>
 
           {activeTab === 'slack' && (
             <div className="space-y-4">
               <button onClick={onSendSlack} disabled={loadingSlack} className={`px-4 py-2 rounded text-white ${loadingSlack ? 'bg-cyan-400 cursor-not-allowed' : 'bg-cyan-600 hover:bg-cyan-700'}`}>
-                {loadingSlack ? 'Göndərilir...' : 'Slack-a göndər'}
+                {loadingSlack ? tClient('msg_sending', locale) : tClient('msg_send_slack', locale)}
               </button>
             </div>
           )}
@@ -217,7 +219,7 @@ export default function MessagingPage() {
           {activeTab === 'tg_channel' && (
             <div className="space-y-4">
               <button onClick={onSendTelegramChannel} disabled={loadingTgChannel} className={`px-4 py-2 rounded text-white ${loadingTgChannel ? 'bg-cyan-400 cursor-not-allowed' : 'bg-cyan-600 hover:bg-cyan-700'}`}>
-                {loadingTgChannel ? 'Göndərilir...' : 'Telegram kanalına göndər'}
+                {loadingTgChannel ? tClient('msg_sending', locale) : tClient('msg_send_tg_channel', locale)}
               </button>
             </div>
           )}
@@ -248,10 +250,10 @@ export default function MessagingPage() {
                     );
                   })}
                 </div>
-                <div className="text-xs text-cyan-700 mt-1">Seçilən: {selectedTelegramAgentsLabels || '-'}</div>
+                <div className="text-xs text-cyan-700 mt-1">{tClient('msg_selected', locale)}: {selectedTelegramAgentsLabels || '-'}</div>
               </div>
               <button onClick={onSendTelegramAgents} disabled={loadingTgAgents} className={`px-4 py-2 rounded text-white ${loadingTgAgents ? 'bg-cyan-400 cursor-not-allowed' : 'bg-cyan-600 hover:bg-cyan-700'}`}>
-                {loadingTgAgents ? 'Göndərilir...' : 'Seçilən agentlərə Telegram'}
+                {loadingTgAgents ? tClient('msg_sending', locale) : tClient('msg_send_tg_agents', locale)}
               </button>
             </div>
           )}
@@ -280,7 +282,7 @@ export default function MessagingPage() {
                     );
                   })}
                 </div>
-                <div className="text-xs text-cyan-700 mt-1">Seçilən: {selectedEmailAgentsLabels || '-'}</div>
+                <div className="text-xs text-cyan-700 mt-1">{tClient('msg_selected', locale)}: {selectedEmailAgentsLabels || '-'}</div>
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-700">Başlıq</label>

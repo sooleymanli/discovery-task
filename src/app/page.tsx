@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useRef, useState } from 'react';
 import { calculatePremiumEstimate, defaultCalculatorConfig, type CalculatorConfig } from '@/lib/calculator';
 import { createSupabaseBrowserClient } from '@/lib/supabase';
+import { tClient, useLocale } from '@/lib/i18n/client';
 
 const quoteSchema = z.object({
   age: z.coerce.number().min(18).max(65),
@@ -20,6 +21,7 @@ const quoteSchema = z.object({
 type QuoteValues = z.infer<typeof quoteSchema>;
 
 export default function Home() {
+  const [locale] = useLocale();
   const [premium, setPremium] = useState<number | null>(null);
   const [calcConfig, setCalcConfig] = useState<CalculatorConfig | null>(null);
   const [calcVersion, setCalcVersion] = useState<string | null>(null);
@@ -50,11 +52,11 @@ export default function Home() {
     
     // Simulate calculation steps with animations
     const steps = [
-      "Məlumatları yoxlayır...",
-      "Risk faktörlərini hesablayır...",
-      "Yaş və cins analizi...",
-      "Sığorta məbləğini qiymətləndirir...",
-      "Yekun hesablama..."
+      tClient('calc_step_1', locale),
+      tClient('calc_step_2', locale),
+      tClient('calc_step_3', locale),
+      tClient('calc_step_4', locale),
+      tClient('calc_step_5', locale),
     ];
     
     for (let i = 0; i < steps.length; i++) {
@@ -245,7 +247,7 @@ export default function Home() {
               className="inline-flex items-center rounded-full bg-gradient-to-r from-cyan-50 to-teal-50 px-4 py-2 text-sm font-medium text-cyan-700 border border-cyan-200"
             >
               <span className="w-2 h-2 bg-cyan-500 rounded-full mr-2 animate-pulse"></span>
-              PlanB Sığorta • Gənclər üçün
+              {tClient('lp_badge', locale)}
             </motion.span>
             
             <motion.h1 
@@ -254,9 +256,9 @@ export default function Home() {
               transition={{ delay: 0.3, duration: 0.8 }}
               className="text-5xl md:text-6xl font-bold tracking-tight bg-gradient-to-r from-gray-900 via-cyan-900 to-teal-900 bg-clip-text "
             >
-              Plan A ilə{'  '}
+              {tClient('lp_hero_line1', locale)}{'  '}
               <span className="relative">
-                risk alırsan
+                {tClient('lp_hero_line2', locale)}
                 <motion.div
                   className="absolute -bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-300 to-teal-300 rounded-full opacity-60"
                   initial={{ scaleX: 0 }}
@@ -265,7 +267,7 @@ export default function Home() {
                 />
               </span>
               <br />
-              <span className="text-cyan-600">PlanB var!</span>
+              <span className="text-cyan-600">{tClient('lp_hero_line3', locale)}</span>
             </motion.h1>
             
             <motion.p 
@@ -274,9 +276,9 @@ export default function Home() {
               transition={{ delay: 0.5, duration: 0.8 }}
               className="text-xl text-gray-900/80 leading-relaxed"
             >
-              <span className="font-semibold text-cyan-600">“Gənclər üçün həyat sığortası - ” </span> 
-              <span className="font-semibold text-gray-900"> 2 dəqiqəyə qiymət</span> 
-              <span className="font-semibold text-gray-900"> 5 dəqiqəyə PlanB!</span> 
+              <span className="font-semibold text-cyan-600">{tClient('lp_hero_sub_1', locale)} </span> 
+              <span className="font-semibold text-gray-900"> {tClient('lp_hero_sub_2', locale)}</span> 
+              <span className="font-semibold text-gray-900"> {tClient('lp_hero_sub_3', locale)}</span> 
             </motion.p>
             
             <motion.div 
@@ -294,7 +296,7 @@ export default function Home() {
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
-                PlanB qiymətini al
+                {tClient('lp_cta_calc', locale)}
               </motion.a>
               
               <motion.div
@@ -305,7 +307,7 @@ export default function Home() {
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
-                  PlanB al
+                  {tClient('lp_cta_apply', locale)}
               </Link>
               </motion.div>
           </motion.div>
@@ -318,15 +320,15 @@ export default function Home() {
             >
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-cyan-500 rounded-full"></div>
-                <span>Tez nəticə</span>
+                <span>{tClient('lp_fast', locale)}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-teal-500 rounded-full"></div>
-                <span>24/7 müraciət</span>
+                <span>{tClient('lp_24_7', locale)}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                <span>Gənclər üçün</span>
+                <span>{tClient('lp_for_young', locale)}</span>
               </div>
             </motion.div>
           </motion.div>
@@ -345,32 +347,32 @@ export default function Home() {
                   className="bg-white rounded-2xl p-6 shadow-sm border border-cyan-100"
                 >
                   <div className="text-3xl mb-2">⚡</div>
-                  <div className="text-sm font-semibold text-gray-900">Sürətli</div>
-                  <div className="text-xs text-cyan-600">2 dəqiqə</div>
+                  <div className="text-sm font-semibold text-gray-900">{tClient('hero_card1_title', locale)}</div>
+                  <div className="text-xs text-cyan-600">{tClient('hero_card1_desc', locale)}</div>
                 </motion.div>
                 <motion.div 
                   whileHover={{ scale: 1.05 }}
                   className="bg-white rounded-2xl p-6 shadow-sm border border-cyan-100"
                 >
                   <div className="text-3xl mb-2">🎯</div>
-                  <div className="text-sm font-semibold text-gray-900">Gənclər</div>
-                  <div className="text-xs text-cyan-600">18-30 yaş</div>
+                  <div className="text-sm font-semibold text-gray-900">{tClient('hero_card2_title', locale)}</div>
+                  <div className="text-xs text-cyan-600">{tClient('hero_card2_desc', locale)}</div>
                 </motion.div>
                 <motion.div 
                   whileHover={{ scale: 1.05 }}
                   className="bg-white rounded-2xl p-6 shadow-sm border border-cyan-100"
                 >
                   <div className="text-3xl mb-2">💎</div>
-                  <div className="text-sm font-semibold text-gray-900">Şəffaf</div>
-                  <div className="text-xs text-cyan-600">Gizli yox</div>
+                  <div className="text-sm font-semibold text-gray-900">{tClient('hero_card3_title', locale)}</div>
+                  <div className="text-xs text-cyan-600">{tClient('hero_card3_desc', locale)}</div>
                 </motion.div>
                 <motion.div 
                   whileHover={{ scale: 1.05 }}
                   className="bg-white rounded-2xl p-6 shadow-sm border border-cyan-100"
                 >
                   <div className="text-3xl mb-2">🚀</div>
-                  <div className="text-sm font-semibold text-gray-900">PlanB</div>
-                  <div className="text-xs text-cyan-600">Risk yox</div>
+                  <div className="text-sm font-semibold text-gray-900">{tClient('hero_card4_title', locale)}</div>
+                  <div className="text-xs text-cyan-600">{tClient('hero_card4_desc', locale)}</div>
                 </motion.div>
               </div>
               
@@ -407,15 +409,15 @@ export default function Home() {
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
-            PlanB Kalkulyatoru
+            {tClient('calc_badge', locale)}
           </div>
           <h2 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-gray-900 via-cyan-900 to-teal-900 bg-clip-text text-transparent">
-            PlanB qiymətini hesabla
+            {tClient('calc_title', locale)}
           </h2>
           <p className="mt-4 text-xl text-gray-900/80 max-w-2xl mx-auto">
-            Sadə formla təxmini aylıq ödənişi öyrənin. 
-            <span className="font-semibold text-cyan-600">100% pulsuz</span> və 
-            <span className="font-semibold text-cyan-600"> dəqiq</span>.
+            {tClient('calc_desc_1', locale)} 
+            <span className="font-semibold text-cyan-600">{tClient('calc_desc_2', locale)}</span> və 
+            <span className="font-semibold text-cyan-600"> {tClient('calc_desc_3', locale)}</span>.
           </p>
         </motion.div>
         <motion.div 
@@ -439,14 +441,14 @@ export default function Home() {
                   transition={{ delay: 0.1 }}
                   className="space-y-2"
                 >
-                  <label className="block text-sm font-semibold text-gray-900">Yaş</label>
+                  <label className="block text-sm font-semibold text-gray-900">{tClient('form_age', locale)}</label>
                   <input 
-                    placeholder="məs: 25" 
+                    placeholder={tClient('form_age_ph', locale)} 
                     type="number" 
                     className="w-full rounded-xl border-2 border-cyan-200 p-4 text-lg transition-all duration-300 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100" 
                     {...quoteForm.register('age')} 
                   />
-                  <p className="text-xs text-cyan-600">18–65 yaş aralığı</p>
+                  <p className="text-xs text-cyan-600">{tClient('form_age_helper', locale)}</p>
                 </motion.div>
                 
                 <motion.div 
@@ -456,13 +458,13 @@ export default function Home() {
                   transition={{ delay: 0.2 }}
                   className="space-y-2"
                 >
-                  <label className="block text-sm font-semibold text-gray-900">Cins</label>
+                  <label className="block text-sm font-semibold text-gray-900">{tClient('form_gender', locale)}</label>
                   <select 
                     className="w-full rounded-xl border-2 border-cyan-200 p-4 h-16 text-lg transition-all duration-300 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100" 
                     {...quoteForm.register('gender')}
                   >
-                    <option value="male">Kişi</option>
-                    <option value="female">Qadın</option>
+                    <option value="male">{tClient('form_gender_m', locale)}</option>
+                    <option value="female">{tClient('form_gender_f', locale)}</option>
                   </select>
                 </motion.div>
               </div>
@@ -474,14 +476,14 @@ export default function Home() {
                 transition={{ delay: 0.3 }}
                 className="space-y-2"
               >
-                <label className="block text-sm font-semibold text-gray-900">Sığorta məbləği (AZN)</label>
+                <label className="block text-sm font-semibold text-gray-900">{tClient('form_amount', locale)}</label>
                 <input 
-                  placeholder="məs: 100000" 
+                  placeholder={tClient('form_amount_ph', locale)} 
                   type="number" 
                   className="w-full rounded-xl border-2 border-cyan-200 p-4 text-lg transition-all duration-300 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100" 
                   {...quoteForm.register('coverageAmount')} 
                 />
-                <p className="text-xs text-cyan-600">Minimum 10,000 AZN</p>
+                <p className="text-xs text-cyan-600">{tClient('form_amount_helper', locale)}</p>
               </motion.div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
@@ -492,9 +494,9 @@ export default function Home() {
                   transition={{ delay: 0.4 }}
                   className="space-y-2"
                 >
-                  <label className="block text-sm font-semibold text-gray-900">Müddət (il)</label>
+                  <label className="block text-sm font-semibold text-gray-900">{tClient('form_term', locale)}</label>
                   <input 
-                    placeholder="məs: 20" 
+                    placeholder={tClient('form_term_ph', locale)} 
                     type="number" 
                     className="w-full rounded-xl border-2 border-cyan-200 p-4 text-lg transition-all duration-300 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100" 
                     {...quoteForm.register('termYears')} 
@@ -515,7 +517,7 @@ export default function Home() {
                       className="w-5 h-5 text-cyan-600 rounded focus:ring-cyan-500" 
                       {...quoteForm.register('smoker')} 
                     />
-                    <label htmlFor="smoker2" className="text-md font-semibold text-gray-900">Siqaret çəkir</label>
+                    <label htmlFor="smoker2" className="text-md font-semibold text-gray-900">{tClient('form_smoker', locale)}</label>
                   </div>
                 </motion.div>
               </div>
@@ -549,14 +551,14 @@ export default function Home() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                           </svg>
                         </motion.div>
-                        Hesablanır...
+                        {tClient('calc_processing', locale)}
                       </>
                     ) : (
                       <>
                         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
-                        PlanB qiymətini hesabla
+                        {tClient('calc_btn', locale)}
                       </>
                     )}
                   </span>
@@ -583,17 +585,17 @@ export default function Home() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                       </svg>
                     </motion.div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">PlanB Hesablanır</h3>
-                    <p className="text-sm text-gray-600">Zəhmət olmasa gözləyin...</p>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">{tClient('calc_loading_title', locale)}</h3>
+                    <p className="text-sm text-gray-600">{tClient('calc_loading_desc', locale)}</p>
                   </div>
                   
                   <div className="space-y-3">
                     {[
-                      "Məlumatları yoxlayır...",
-                      "Risk faktörlərini hesablayır...",
-                      "Yaş və cins analizi...",
-                      "Sığorta məbləğini qiymətləndirir...",
-                      "Yekun hesablama..."
+                      tClient('calc_step_1', locale),
+                      tClient('calc_step_2', locale),
+                      tClient('calc_step_3', locale),
+                      tClient('calc_step_4', locale),
+                      tClient('calc_step_5', locale)
                     ].map((step, index) => (
                       <motion.div
                         key={index}
@@ -672,8 +674,8 @@ export default function Home() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </motion.div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">PlanB Qiyməti Hazırdır!</h3>
-                    <p className="text-sm text-gray-600">Təbriklər! Sizin üçün ən yaxşı qiymət</p>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">{tClient('result_ready_title', locale)}</h3>
+                    <p className="text-sm text-gray-600">{tClient('result_ready_desc', locale)}</p>
                   </div>
                   
                   <motion.div
@@ -685,7 +687,7 @@ export default function Home() {
                     <div className="text-4xl font-bold text-emerald-600 mb-2">
                       {premium.toLocaleString('az-AZ')} AZN
                     </div>
-                    <div className="text-sm text-gray-600">aylıq ödəniş</div>
+                    <div className="text-sm text-gray-600">{tClient('result_monthly', locale)}</div>
                   </motion.div>
                   
                   <motion.div
@@ -702,7 +704,7 @@ export default function Home() {
                         href={buildApplyHref()} 
                         className="block w-full bg-gradient-to-r from-emerald-500 to-green-500 text-white py-3 px-4 rounded-xl font-bold text-center shadow-lg hover:shadow-xl transition-all duration-300"
                       >
-                        PlanB al - İndi müraciət et!
+                        {tClient('result_apply_now', locale)}
                   </Link>
                     </motion.div>
                     
@@ -712,7 +714,7 @@ export default function Home() {
                       onClick={() => setShowResult(false)}
                       className="block w-full bg-white border-2 border-emerald-200 text-emerald-600 py-2 px-4 rounded-xl font-semibold text-center hover:bg-emerald-50 transition-all duration-300"
                     >
-                      Yenidən hesabla
+                      {tClient('result_recalculate', locale)}
                     </motion.button>
                   </motion.div>
                 </div>
@@ -723,67 +725,67 @@ export default function Home() {
             {!isCalculating && !showResult && (
               <div className="lg:col-span-1">
                 <div className="rounded-2xl border border-cyan-100 bg-white/70 p-4">
-                  <div className="text-sm font-semibold text-cyan-700 mb-3">💡 İpucu</div>
+                  <div className="text-sm font-semibold text-cyan-700 mb-3">{tClient('tips_title', locale)}</div>
                 <ul className="mt-2 space-y-3 text-sm text-gray-700">
                   <motion.li 
                     whileHover={{ x: 5 }}
                     className="flex items-center space-x-2"
                   >
                     <span className="w-2 h-2 bg-cyan-400 rounded-full"></span>
-                    <span>Daha yüksək məbləğ → daha çox ödəniş</span>
+                    <span>{tClient('tips_higher', locale)}</span>
                   </motion.li>
                   <motion.li 
                     whileHover={{ x: 5 }}
                     className="flex items-center space-x-2"
                   >
                     <span className="w-2 h-2 bg-teal-400 rounded-full"></span>
-                    <span>Uzun müddət → faktor artır</span>
+                    <span>{tClient('tips_longer', locale)}</span>
                   </motion.li>
                   <motion.li 
                     whileHover={{ x: 5 }}
                     className="flex items-center space-x-2"
                   >
                     <span className="w-2 h-2 bg-emerald-400 rounded-full"></span>
-                    <span>Siqaret çəkən → əlavə risk</span>
+                    <span>{tClient('tips_smoker', locale)}</span>
                   </motion.li>
                 </ul>
-                <div className="mt-6 text-sm font-semibold text-cyan-700">📊 Seçilən dəyərlər</div>
+                <div className="mt-6 text-sm font-semibold text-cyan-700">{tClient('tips_selected', locale)}</div>
                 <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
                   <motion.div 
                     whileHover={{ scale: 1.05 }}
                     className="rounded-lg border border-cyan-200 bg-cyan-50 px-3 py-2 text-center"
                   >
-                    <div className="font-semibold text-cyan-700">Yaş</div>
+                    <div className="font-semibold text-cyan-700">{tClient('tips_age', locale)}</div>
                     <div className="text-gray-900">{quoteForm.watch('age') ?? '-'}</div>
                   </motion.div>
                   <motion.div 
                     whileHover={{ scale: 1.05 }}
                     className="rounded-lg border border-teal-200 bg-teal-50 px-3 py-2 text-center"
                   >
-                    <div className="font-semibold text-teal-700">Cins</div>
-                    <div className="text-gray-900">{quoteForm.watch('gender') === 'male' ? 'Kişi' : quoteForm.watch('gender') === 'female' ? 'Qadın' : '-'}</div>
+                    <div className="font-semibold text-teal-700">{tClient('tips_gender', locale)}</div>
+                    <div className="text-gray-900">{quoteForm.watch('gender') === 'male' ? tClient('form_gender_m', locale) : quoteForm.watch('gender') === 'female' ? tClient('form_gender_f', locale) : '-'}</div>
                   </motion.div>
                   <motion.div 
                     whileHover={{ scale: 1.05 }}
                     className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-center"
                   >
-                    <div className="font-semibold text-emerald-700">Məbləğ</div>
+                    <div className="font-semibold text-emerald-700">{tClient('tips_amount', locale)}</div>
                     <div className="text-gray-900">{quoteForm.watch('coverageAmount') ? `${quoteForm.watch('coverageAmount')?.toLocaleString('az-AZ')} AZN` : '-'}</div>
                   </motion.div>
                   <motion.div 
                     whileHover={{ scale: 1.05 }}
                     className="rounded-lg border border-purple-200 bg-purple-50 px-3 py-2 text-center"
                   >
-                    <div className="font-semibold text-purple-700">Müddət</div>
-                    <div className="text-gray-900">{quoteForm.watch('termYears') ? `${quoteForm.watch('termYears')} il` : '-'}</div>
+                    <div className="font-semibold text-purple-700">{tClient('tips_term', locale)}</div>
+                    <div className="text-gray-900">{quoteForm.watch('termYears') ? `${quoteForm.watch('termYears')} ${tClient('form_years', locale)}` : '-'}</div>
                   </motion.div>
                 </div>
                 <motion.div 
                   whileHover={{ scale: 1.05 }}
                   className="mt-3 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 text-center"
                 >
-                  <div className="font-semibold text-orange-700">Siqaret</div>
-                  <div className="text-gray-900">{quoteForm.watch('smoker') ? 'Bəli' : 'Xeyr'}</div>
+                  <div className="font-semibold text-orange-700">{tClient('tips_smoke', locale)}</div>
+                  <div className="text-gray-900">{quoteForm.watch('smoker') ? tClient('tips_yes', locale) : tClient('tips_no', locale)}</div>
                 </motion.div>
               </div>
               </div>
@@ -805,16 +807,13 @@ export default function Home() {
         >
           <div className="inline-flex items-center rounded-full bg-gradient-to-r from-cyan-50 to-teal-50 px-4 py-2 text-sm font-medium text-cyan-700 border border-cyan-200 mb-6">
             <span className="w-2 h-2 bg-cyan-500 rounded-full mr-2 animate-pulse"></span>
-            PlanB Xüsusiyyətləri
+            {tClient('features_badge', locale)}
           </div>
           <h2 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-gray-900 via-cyan-900 to-teal-900 bg-clip-text text-transparent">
-            Niyə PlanB?
+            {tClient('features_title', locale)}
           </h2>
           <p className="mt-4 text-xl text-gray-900/80 max-w-3xl mx-auto">
-            Gənclər üçün xüsusi hazırlanmış <span className="font-semibold text-cyan-600">modern sığorta həlləri</span>. 
-            <span className="font-semibold text-gray-900"> Sadə</span>, 
-            <span className="font-semibold text-gray-900"> sürətli</span> və 
-            <span className="font-semibold text-gray-900"> etibarlı</span>.
+            {tClient('features_desc', locale)}
           </p>
         </motion.div>
 
@@ -837,11 +836,8 @@ export default function Home() {
               >
                 ⚡
               </motion.div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Sürətli Proses</h3>
-              <p className="text-gray-700 leading-relaxed">
-                <span className="font-semibold text-cyan-600">2 dəqiqədə</span> qiymət al, 
-                <span className="font-semibold text-cyan-600"> 5 dəqiqədə</span> PlanB al!
-              </p>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{tClient('feature_fast_title', locale)}</h3>
+              <p className="text-gray-700 leading-relaxed">{tClient('feature_fast_desc', locale)}</p>
             </div>
           </motion.div>
 
@@ -863,11 +859,8 @@ export default function Home() {
               >
                 🔒
               </motion.div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Təhlükəsizlik</h3>
-              <p className="text-gray-700 leading-relaxed">
-                Məlumatlarınız <span className="font-semibold text-emerald-600">256-bit şifrələmə</span> ilə qorunur. 
-                <span className="font-semibold text-emerald-600"> 100% təhlükəsiz</span>.
-              </p>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{tClient('feature_secure_title', locale)}</h3>
+              <p className="text-gray-700 leading-relaxed">{tClient('feature_secure_desc', locale)}</p>
             </div>
           </motion.div>
 
@@ -889,13 +882,8 @@ export default function Home() {
               >
                 📱
               </motion.div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Mobil Uyğun</h3>
-              <p className="text-gray-700 leading-relaxed">
-                İstənilən cihazdan istifadə edin. 
-                <span className="font-semibold text-purple-600">iOS</span>, 
-                <span className="font-semibold text-purple-600"> Android</span>, 
-                <span className="font-semibold text-purple-600"> Desktop</span>.
-              </p>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{tClient('feature_mobile_title', locale)}</h3>
+              <p className="text-gray-700 leading-relaxed">{tClient('feature_mobile_desc', locale)}</p>
             </div>
           </motion.div>
 
@@ -917,11 +905,8 @@ export default function Home() {
               >
                 💎
               </motion.div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Şəffaflıq</h3>
-              <p className="text-gray-700 leading-relaxed">
-                <span className="font-semibold text-orange-600">Gizli yox</span>! Bütün şərtlər 
-                <span className="font-semibold text-orange-600"> açıq və şəffaf</span>.
-              </p>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{tClient('feature_transparent_title', locale)}</h3>
+              <p className="text-gray-700 leading-relaxed">{tClient('feature_transparent_desc', locale)}</p>
             </div>
           </motion.div>
 
@@ -943,11 +928,8 @@ export default function Home() {
               >
                 🎯
               </motion.div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Gənclər üçün</h3>
-              <p className="text-gray-700 leading-relaxed">
-                <span className="font-semibold text-pink-600">18-30 yaş</span> arası üçün xüsusi 
-                <span className="font-semibold text-pink-600"> qiymətlər</span>.
-              </p>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{tClient('feature_youth_title', locale)}</h3>
+              <p className="text-gray-700 leading-relaxed">{tClient('feature_youth_desc', locale)}</p>
             </div>
           </motion.div>
 
@@ -969,11 +951,8 @@ export default function Home() {
               >
                 🚀
               </motion.div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">PlanB</h3>
-              <p className="text-gray-700 leading-relaxed">
-                <span className="font-semibold text-teal-600">Plan A ilə risk alırsan</span>, 
-                <span className="font-semibold text-teal-600"> PlanB var</span>!
-              </p>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{tClient('feature_planb_title', locale)}</h3>
+              <p className="text-gray-700 leading-relaxed">{tClient('feature_planb_desc', locale)}</p>
             </div>
           </motion.div>
         </div>
@@ -992,10 +971,10 @@ export default function Home() {
             
             <div className="relative">
               <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-                Hazırsan PlanB almağa?
+                {tClient('cta_ready_title', locale)}
               </h3>
               <p className="text-lg text-gray-700 mb-6">
-                Gənc peşəkarlar üçün ən yaxşı sığorta həlli
+                {tClient('cta_ready_desc', locale)}
               </p>
               <motion.div
                 whileHover={{ scale: 1.05, y: -2 }}
@@ -1008,7 +987,7 @@ export default function Home() {
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
-                  PlanB al - İndi başla!
+                  {tClient('cta_ready_btn', locale)}
                 </Link>
               </motion.div>
             </div>
@@ -1027,16 +1006,15 @@ export default function Home() {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <div className="inline-flex items-center rounded-full bg-gradient-to-r from-cyan-50 to-teal-50 px-4 py-2 text-sm font-medium text-cyan-700 border border-cyan-200 mb-6">
+            <div className="inline-flex items-center rounded-full bg-gradient-to-r from-cyan-50 to-teal-50 px-4 py-2 text-sm font-medium text-cyan-700 border border-cyan-200 mb-6">
             <span className="w-2 h-2 bg-cyan-500 rounded-full mr-2 animate-pulse"></span>
             PlanB FAQ
           </div>
           <h2 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-gray-900 via-cyan-900 to-teal-900 bg-clip-text text-transparent">
-            Tez-tez verilən suallar
+            {tClient('faq_title', locale)}
           </h2>
           <p className="mt-4 text-xl text-gray-900/80 max-w-3xl mx-auto">
-            PlanB haqqında ən çox soruşulan suallar və cavabları. 
-            <span className="font-semibold text-cyan-600">Hər şey açıq və şəffaf</span>.
+            {tClient('faq_desc', locale)}
           </p>
         </motion.div>
 
@@ -1051,7 +1029,7 @@ export default function Home() {
             >
               <details className="group rounded-2xl border border-cyan-100 bg-white shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
                 <summary className="flex cursor-pointer list-none items-center justify-between p-6 font-semibold text-gray-900 hover:bg-cyan-50/50 transition-colors duration-300">
-                  <span className="text-lg">PlanB kalkulyatoru nə qədər dəqiqdir?</span>
+                  <span className="text-lg">{tClient('faq1_q', locale)}</span>
                   <motion.span 
                     className="text-2xl text-cyan-600 transition-transform duration-300 group-open:rotate-45"
                     whileHover={{ scale: 1.1 }}
@@ -1062,8 +1040,7 @@ export default function Home() {
                 </summary>
                 <div className="px-6 pb-6">
                   <div className="pt-2 text-gray-700 leading-relaxed">
-                    PlanB kalkulyatoru <span className="font-semibold text-cyan-600">%95 dəqiqlik</span> ilə təxmini qiymət verir. 
-                    Dəqiq qiymət üçün mütəxəssisimiz sizinlə əlaqə saxlayaraq məlumatları təsdiqləyir.
+                    {tClient('faq1_a', locale)}
                   </div>
                 </div>
               </details>
@@ -1078,7 +1055,7 @@ export default function Home() {
             >
               <details className="group rounded-2xl border border-emerald-100 bg-white shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
                 <summary className="flex cursor-pointer list-none items-center justify-between p-6 font-semibold text-gray-900 hover:bg-emerald-50/50 transition-colors duration-300">
-                  <span className="text-lg">Məlumatlarım təhlükəsizdirmi?</span>
+                  <span className="text-lg">{tClient('faq2_q', locale)}</span>
                   <motion.span 
                     className="text-2xl text-emerald-600 transition-transform duration-300 group-open:rotate-45"
                     whileHover={{ scale: 1.1 }}
@@ -1089,9 +1066,7 @@ export default function Home() {
                 </summary>
                 <div className="px-6 pb-6">
                   <div className="pt-2 text-gray-700 leading-relaxed">
-                    Bəli, <span className="font-semibold text-emerald-600">100% təhlükəsizdir</span>! 
-                    Bank səviyyəli <span className="font-semibold text-emerald-600">256-bit şifrələmə</span> tətbiq olunur. 
-                    Yalnız yetkili heyətimiz məlumatlarınızı görə bilər.
+                    {tClient('faq2_a', locale)}
                   </div>
                 </div>
               </details>
@@ -1106,7 +1081,7 @@ export default function Home() {
             >
               <details className="group rounded-2xl border border-purple-100 bg-white shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
                 <summary className="flex cursor-pointer list-none items-center justify-between p-6 font-semibold text-gray-900 hover:bg-purple-50/50 transition-colors duration-300">
-                  <span className="text-lg">PlanB almaq üçün nə qədər vaxt lazımdır?</span>
+                  <span className="text-lg">{tClient('faq3_q', locale)}</span>
                   <motion.span 
                     className="text-2xl text-purple-600 transition-transform duration-300 group-open:rotate-45"
                     whileHover={{ scale: 1.1 }}
@@ -1117,9 +1092,7 @@ export default function Home() {
                 </summary>
                 <div className="px-6 pb-6">
                   <div className="pt-2 text-gray-700 leading-relaxed">
-                    <span className="font-semibold text-purple-600">2 dəqiqədə</span> qiymət al, 
-                    <span className="font-semibold text-purple-600"> 5 dəqiqədə</span> PlanB al! 
-                    Bütün proses <span className="font-semibold text-purple-600">onlayn</span> həyata keçirilir.
+                    {tClient('faq3_a', locale)}
                   </div>
                 </div>
               </details>
@@ -1134,7 +1107,7 @@ export default function Home() {
             >
               <details className="group rounded-2xl border border-orange-100 bg-white shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
                 <summary className="flex cursor-pointer list-none items-center justify-between p-6 font-semibold text-gray-900 hover:bg-orange-50/50 transition-colors duration-300">
-                  <span className="text-lg">Gənclər üçün xüsusi qiymətlər varmı?</span>
+                  <span className="text-lg">{tClient('faq4_q', locale)}</span>
                   <motion.span 
                     className="text-2xl text-orange-600 transition-transform duration-300 group-open:rotate-45"
                     whileHover={{ scale: 1.1 }}
@@ -1145,9 +1118,7 @@ export default function Home() {
                 </summary>
                 <div className="px-6 pb-6">
                   <div className="pt-2 text-gray-700 leading-relaxed">
-                    Bəli! <span className="font-semibold text-orange-600">18-30 yaş</span> arası üçün 
-                    <span className="font-semibold text-orange-600"> xüsusi endirimlər</span> təklif edirik. 
-                    Gənc peşəkarlar üçün daha uyğun qiymətlər.
+                    {tClient('faq4_a', locale)}
                   </div>
                 </div>
               </details>
@@ -1162,7 +1133,7 @@ export default function Home() {
             >
               <details className="group rounded-2xl border border-pink-100 bg-white shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
                 <summary className="flex cursor-pointer list-none items-center justify-between p-6 font-semibold text-gray-900 hover:bg-pink-50/50 transition-colors duration-300">
-                  <span className="text-lg">Müraciətdən sonra nə baş verir?</span>
+                  <span className="text-lg">{tClient('faq5_q', locale)}</span>
                   <motion.span 
                     className="text-2xl text-pink-600 transition-transform duration-300 group-open:rotate-45"
                     whileHover={{ scale: 1.1 }}
@@ -1173,9 +1144,7 @@ export default function Home() {
                 </summary>
                 <div className="px-6 pb-6">
                   <div className="pt-2 text-gray-700 leading-relaxed">
-                    Mütəxəssisimiz <span className="font-semibold text-pink-600">24 saat ərzində</span> sizinlə əlaqə saxlayır. 
-                    Sənədləri yoxlayır, <span className="font-semibold text-pink-600">dəqiq qiymət</span> verir və 
-                    <span className="font-semibold text-pink-600"> PlanB</span> aktivləşdirir.
+                    {tClient('faq5_a', locale)}
                   </div>
                 </div>
               </details>
@@ -1190,7 +1159,7 @@ export default function Home() {
             >
               <details className="group rounded-2xl border border-teal-100 bg-white shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
                 <summary className="flex cursor-pointer list-none items-center justify-between p-6 font-semibold text-gray-900 hover:bg-teal-50/50 transition-colors duration-300">
-                  <span className="text-lg">PlanB nə üçün fərqlidir?</span>
+                  <span className="text-lg">{tClient('faq6_q', locale)}</span>
                   <motion.span 
                     className="text-2xl text-teal-600 transition-transform duration-300 group-open:rotate-45"
                     whileHover={{ scale: 1.1 }}
@@ -1201,10 +1170,7 @@ export default function Home() {
                 </summary>
                 <div className="px-6 pb-6">
                   <div className="pt-2 text-gray-700 leading-relaxed">
-                    <span className="font-semibold text-teal-600">Plan A ilə risk alırsan, PlanB var!</span> 
-                    Gənclər üçün xüsusi hazırlanmış, <span className="font-semibold text-teal-600">şəffaf</span>, 
-                    <span className="font-semibold text-teal-600"> sürətli</span> və 
-                    <span className="font-semibold text-teal-600"> etibarlı</span> sığorta həlli.
+                    {tClient('faq6_a', locale)}
                   </div>
                 </div>
               </details>
@@ -1221,10 +1187,10 @@ export default function Home() {
           >
             <div className="rounded-2xl border border-cyan-100 bg-gradient-to-br from-cyan-50 to-teal-50 p-8">
               <h3 className="text-xl font-bold text-gray-900 mb-3">
-                Sualınız yoxdur?
+                {tClient('faq_contact_title', locale)}
               </h3>
               <p className="text-gray-700 mb-6">
-                PlanB komandası sizinlə əlaqə saxlayaraq bütün suallarınızı cavablandıracaq
+                {tClient('faq_contact_desc', locale)}
               </p>
               <motion.div
                 whileHover={{ scale: 1.05, y: -2 }}
@@ -1237,7 +1203,7 @@ export default function Home() {
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
-                  PlanB al - Suallarınızı soruşun
+                  {tClient('faq_contact_btn', locale)}
                 </Link>
               </motion.div>
             </div>

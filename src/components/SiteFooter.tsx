@@ -2,8 +2,11 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { tClient, useLocale } from '@/lib/i18n/client';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 export function SiteFooter() {
+  const [locale] = useLocale();
   return (
             <footer className="relative border-t border-cyan-100/60 bg-gradient-to-br from-cyan-50/50 to-teal-50/50 backdrop-blur">
       {/* Decorative elements */}
@@ -31,16 +34,16 @@ export function SiteFooter() {
                         <span className="text-white font-bold text-lg">B</span>
                       </motion.div>
               <div>
-                <div className="font-bold text-xl text-gray-900">PlanB</div>
-                <div className="text-sm text-cyan-600 -mt-1 font-medium">Sığorta</div>
+              <div className="font-bold text-xl text-gray-900">{tClient('brand_name', locale)}</div>
+              <div className="text-sm text-cyan-600 -mt-1 font-medium">{tClient('brand_tag', locale)}</div>
               </div>
             </div>
             <p className="text-gray-900/80 leading-relaxed mb-4">
-              <span className="font-bold text-cyan-600">&ldquo;Plan A ilə risk alırsan, PlanB var&rdquo;</span>
+              <span className="font-bold text-cyan-600">&ldquo;{tClient('slogan', locale)}&rdquo;</span>
             </p>
             <p className="text-gray-900/70 leading-relaxed mb-6">
-              Gənc insanlar üçün həyatlarını sığortalayır. 
-              Gələcəyinizi qoruyun, risk almayın!
+              {tClient('footer_intro_1', locale)} 
+              {tClient('footer_intro_2', locale)}
             </p>
             
             {/* Social Links */}
@@ -95,13 +98,13 @@ export function SiteFooter() {
             viewport={{ once: true }}
             transition={{ delay: 0.1, duration: 0.6 }}
           >
-            <h3 className="font-bold text-lg text-gray-900 mb-6">PlanB Məhsulları</h3>
+            <h3 className="font-bold text-lg text-gray-900 mb-6">{tClient('footer_products', locale)}</h3>
             <ul className="space-y-3">
               {[
-                { name: 'PlanB Həyat', href: '/#calculator', desc: 'Əsas həyat sığortası' },
-                { name: 'PlanB Ailə', href: '/#calculator', desc: 'Ailə üçün sığorta' },
-                { name: 'PlanB Karyera', href: '/#calculator', desc: 'Peşəkar sığorta' },
-                { name: 'PlanB Gənclər', href: '/#calculator', desc: '18-30 yaş üçün' }
+                { name: tClient('footer_products_life', locale), href: '/#calculator', desc: tClient('footer_desc_life', locale) },
+                { name: tClient('footer_products_family', locale), href: '/#calculator', desc: tClient('footer_desc_family', locale) },
+                { name: tClient('footer_products_career', locale), href: '/#calculator', desc: tClient('footer_desc_career', locale) },
+                { name: tClient('footer_products_youth', locale), href: '/#calculator', desc: tClient('footer_desc_youth', locale) }
               ].map((item, index) => (
                 <motion.li 
                   key={index}
@@ -130,14 +133,14 @@ export function SiteFooter() {
             viewport={{ once: true }}
             transition={{ delay: 0.2, duration: 0.6 }}
           >
-            <h3 className="font-bold text-lg text-gray-900 mb-6">Dəstək</h3>
+            <h3 className="font-bold text-lg text-gray-900 mb-6">{tClient('footer_support', locale)}</h3>
             <ul className="space-y-3">
               {[
-                { name: 'Əlaqə', href: 'mailto:info@planb.az' },
-                { name: 'Tez-tez verilən suallar', href: '/#faq' },
-                { name: 'Yardım mərkəzi', href: '#' },
-                { name: 'Onlayn söhbət', href: '#' },
-                { name: 'WhatsApp dəstək', href: '#' }
+                { name: tClient('footer_contact', locale), href: 'mailto:info@planb.az' },
+                { name: tClient('footer_faq', locale), href: '/#faq' },
+                { name: tClient('footer_help', locale), href: '#' },
+                { name: tClient('footer_chat', locale), href: '#' },
+                { name: tClient('footer_whatsapp', locale), href: '#' }
               ].map((item, index) => (
                 <motion.li 
                   key={index}
@@ -163,14 +166,14 @@ export function SiteFooter() {
             viewport={{ once: true }}
             transition={{ delay: 0.3, duration: 0.6 }}
           >
-            <h3 className="font-bold text-lg text-gray-900 mb-6">PlanB</h3>
+            <h3 className="font-bold text-lg text-gray-900 mb-6">{tClient('footer_company', locale)}</h3>
             <ul className="space-y-3">
               {[
-                { name: 'Haqqımızda', href: '#' },
-                { name: 'Karyera', href: '#' },
-                { name: 'Blog', href: '#' },
-                { name: 'Xəbərlər', href: '#' },
-                { name: 'Partnyorlar', href: '#' }
+                { name: tClient('footer_about', locale), href: '#' },
+                { name: tClient('footer_career', locale), href: '#' },
+                { name: tClient('footer_blog', locale), href: '#' },
+                { name: tClient('footer_news', locale), href: '#' },
+                { name: tClient('footer_partners', locale), href: '#' }
               ].map((item, index) => (
                 <motion.li 
                   key={index}
@@ -200,18 +203,19 @@ export function SiteFooter() {
         >
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-sm text-gray-900/70">
-              © {new Date().getFullYear()} PlanB Sığorta. Bütün hüquqlar qorunur.
+              © {new Date().getFullYear()} {tClient('brand_name', locale)} {tClient('brand_tag', locale)}. Bütün hüquqlar qorunur.
             </div>
             <div className="flex items-center gap-6 text-sm">
               <Link href="#" className="text-gray-900/70 hover:text-orange-600 transition-colors">
-                Məxfilik Siyasəti
+                {tClient('privacy_policy', locale)}
               </Link>
               <Link href="#" className="text-gray-900/70 hover:text-orange-600 transition-colors">
-                İstifadə Şərtləri
+                {tClient('terms_of_use', locale)}
               </Link>
               <Link href="#" className="text-gray-900/70 hover:text-orange-600 transition-colors">
-                Cookie Siyasəti
+                {tClient('cookie_policy', locale)}
               </Link>
+              <LanguageSwitcher />
             </div>
           </div>
         </motion.div>

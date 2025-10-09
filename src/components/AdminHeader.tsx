@@ -5,8 +5,11 @@ import { useRouter } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@/lib/supabase';
 import { NotificationCenter } from './NotificationCenter';
 import { motion, AnimatePresence } from 'framer-motion';
+import { LanguageSwitcher } from './LanguageSwitcher';
+import { tClient, useLocale } from '@/lib/i18n/client';
 
 export function AdminHeader() {
+  const [locale] = useLocale();
   const router = useRouter();
   const supabase = createSupabaseBrowserClient();
   const [role, setRole] = useState<string | null>(null);
@@ -64,13 +67,13 @@ export function AdminHeader() {
             </div>
             <div className="hidden sm:block">
               <h1 className="text-xl font-bold bg-gradient-to-r from-cyan-900 via-teal-900 to-emerald-900 bg-clip-text text-transparent">
-                PlanB Admin
+                {tClient('brand_name', locale)} Admin
               </h1>
-              <p className="text-xs text-cyan-600 -mt-1">Plan A ilə risk alırsan, PlanB var!</p>
+              <p className="text-xs text-cyan-600 -mt-1">{tClient('slogan', locale)}</p>
             </div>
             <div className="sm:hidden">
               <h1 className="text-lg font-bold bg-gradient-to-r from-cyan-900 via-teal-900 to-emerald-900 bg-clip-text text-transparent">
-                PlanB
+                {tClient('brand_name', locale)}
               </h1>
             </div>
           </motion.div>
@@ -81,6 +84,7 @@ export function AdminHeader() {
             <div className="hidden sm:block">
               <NotificationCenter />
             </div>
+            <LanguageSwitcher />
 
           
 
@@ -149,7 +153,7 @@ export function AdminHeader() {
                         <svg className="w-4 h-4 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                         </svg>
-                        <span>Sayta keçid et</span>
+                        <span>{tClient('go_to_site', locale)}</span>
                       </a>
                       
                   
@@ -162,7 +166,7 @@ export function AdminHeader() {
                         <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
-                        <span>Çıxış</span>
+                        <span>{tClient('logout', locale)}</span>
                       </button>
                     </div>
                   </motion.div>

@@ -4,8 +4,10 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@/lib/supabase';
 import { motion } from 'framer-motion';
+import { tClient, useLocale } from '@/lib/i18n/client';
 
 export default function SettingsPage() {
+  const [locale] = useLocale();
   const router = useRouter();
   const supabase = createSupabaseBrowserClient();
   const [email, setEmail] = useState<string>('');
@@ -114,8 +116,8 @@ export default function SettingsPage() {
             <div className="absolute inset-0 w-12 h-12 border-4 border-transparent border-t-teal-500 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
           </div>
           <div className="text-center">
-            <p className="text-gray-700 font-semibold text-lg">Yüklənir...</p>
-            <p className="text-gray-500 text-sm mt-1">Zəhmət olmasa gözləyin</p>
+            <p className="text-gray-700 font-semibold text-lg">{tClient('dashboard_loading', locale)}</p>
+            <p className="text-gray-500 text-sm mt-1">{tClient('dashboard_wait', locale)}</p>
           </div>
         </div>
       </div>
@@ -143,7 +145,7 @@ export default function SettingsPage() {
             <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-900 via-teal-900 to-emerald-900 bg-clip-text text-transparent">
               Tənzimləmələr
             </h1>
-            <p className="text-cyan-600 text-sm">PlanB Admin Panel - Hesab tənzimləmələri</p>
+            <p className="text-cyan-600 text-sm">{tClient('settings_subtitle', locale)}</p>
           </div>
         </div>
       </motion.div>
@@ -165,14 +167,14 @@ export default function SettingsPage() {
               </svg>
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">Şifrəni Yenilə</h2>
-              <p className="text-cyan-600 text-sm">Hesab təhlükəsizliyi üçün güclü şifrə seçin</p>
+              <h2 className="text-xl font-bold text-gray-900">{tClient('settings_password', locale)}</h2>
+              <p className="text-cyan-600 text-sm">{tClient('settings_subtitle', locale)}</p>
             </div>
           </div>
 
           <form onSubmit={onChangePassword} className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">{tClient('settings_email', locale)}</label>
               <input 
                 value={email} 
                 disabled 
@@ -181,7 +183,7 @@ export default function SettingsPage() {
             </div>
             
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Cari şifrə</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">{tClient('settings_current_password', locale)}</label>
               <input 
                 type="password" 
                 value={currentPassword} 
@@ -193,7 +195,7 @@ export default function SettingsPage() {
             </div>
             
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Yeni şifrə</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">{tClient('settings_new_password', locale)}</label>
               <input 
                 type="password" 
                 value={newPassword} 
@@ -205,7 +207,7 @@ export default function SettingsPage() {
             </div>
             
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Yeni şifrə (təkrar)</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">{tClient('settings_confirm_password', locale)}</label>
               <input 
                 type="password" 
                 value={confirmPassword} 
@@ -278,8 +280,8 @@ export default function SettingsPage() {
               </svg>
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">Telegram Chat ID</h2>
-              <p className="text-purple-600 text-sm">Agent təyinatı və bildirişlər üçün istifadə olunur</p>
+              <h2 className="text-xl font-bold text-gray-900">{tClient('settings_telegram', locale)}</h2>
+              <p className="text-purple-600 text-sm">{tClient('settings_telegram_desc', locale)}</p>
             </div>
           </div>
           
@@ -301,7 +303,7 @@ export default function SettingsPage() {
 
           <form onSubmit={onSaveChatId} className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Chat ID</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">{tClient('settings_telegram', locale)}</label>
               <input 
                 value={telegramChatId} 
                 onChange={(e) => setTelegramChatId(e.target.value)} 

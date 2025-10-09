@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { tClient, useLocale } from '@/lib/i18n/client';
 type Application = {
   id: string;
   created_at: string;
@@ -26,6 +27,7 @@ type Pagination = {
   hasPrev: boolean;
 };
 export default function ApplicationsPage() {
+  const [locale] = useLocale();
   const [apps, setApps] = useState<Application[]>([]);
   const [role, setRole] = useState<'superadmin' | 'agent' | 'unknown'>('unknown');
   const [agents, setAgents] = useState<Agent[]>([]);
@@ -96,7 +98,7 @@ export default function ApplicationsPage() {
   const updateStatus = async (id: string, status: string) => {
     let reason: string | undefined = undefined;
     if (status === 'closed') {
-      reason = prompt('İmtina səbəbini daxil edin') ?? undefined;
+      reason = prompt(tClient('apps_rejection_reason', locale)) ?? undefined;
     }
     await fetch('/api/admin/applications/status', {
       method: 'POST',
@@ -159,7 +161,7 @@ export default function ApplicationsPage() {
     
     let reason: string | undefined = undefined;
     if (status === 'closed') {
-      reason = prompt('İmtina səbəbini daxil edin') ?? undefined;
+      reason = prompt(tClient('apps_rejection_reason', locale)) ?? undefined;
     }
     try {
       await Promise.all(
@@ -240,13 +242,13 @@ export default function ApplicationsPage() {
             <div>
               <div className="inline-flex items-center rounded-full bg-gradient-to-r from-cyan-50 to-teal-50 px-4 py-2 text-sm font-medium text-cyan-700 border border-cyan-200 mb-4">
                 <span className="w-2 h-2 bg-cyan-500 rounded-full mr-2 animate-pulse"></span>
-                PlanB Müraciətlər
+                {tClient('apps_badge', locale)}
               </div>
               <h1 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-gray-900 via-cyan-900 to-teal-900 bg-clip-text text-transparent">
-                Müraciətlər
+                {tClient('apps_title', locale)}
               </h1>
               <p className="text-lg text-gray-700 mt-2">
-                PlanB müraciətlərinin idarə edilməsi və izlənilməsi
+                {tClient('apps_subtitle', locale)}
               </p>
             </div>
             
@@ -263,7 +265,7 @@ export default function ApplicationsPage() {
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                   </svg>
-                  Yenilə
+                  {tClient('apps_refresh', locale)}
                 </div>
               </button>
             </div>
@@ -277,29 +279,29 @@ export default function ApplicationsPage() {
             {/* Basic Filters */}
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               <div className="md:col-span-2">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Axtarış</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">{tClient('apps_search', locale)}</label>
                 <input 
                   className="w-full px-4 py-3 border border-cyan-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 bg-white/80" 
-                  placeholder="Ad, email, telefon..."
+                  placeholder={tClient('apps_search_ph', locale)}
                   value={filters.q} 
                   onChange={(e) => handleFilterChange({ ...filters, q: e.target.value })} 
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Status</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">{tClient('apps_status', locale)}</label>
                 <select 
-                  className="w-full px-4 py-3 border border-cyan-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 bg-white/80" 
+                  className="w-full px-4 py-3 border border-cyan-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 bg-white/80"
                   value={filters.status} 
                   onChange={(e) => handleFilterChange({ ...filters, status: e.target.value })}
                 >
-                  <option value="">Hamısı</option>
-                  <option value="pending">Gözləmədə</option>
-                  <option value="in_progress">Təsdiqlənib</option>
-                  <option value="closed">İmtina olunub</option>
+                  <option value="">{tClient('apps_all', locale)}</option>
+                  <option value="pending">{tClient('apps_pending', locale)}</option>
+                  <option value="in_progress">{tClient('apps_approved', locale)}</option>
+                  <option value="closed">{tClient('apps_rejected', locale)}</option>
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Başlama tarixi</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">{tClient('apps_start_date', locale)}</label>
                 <input 
                   type="date" 
                   className="w-full px-4 py-3 border border-cyan-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 bg-white/80" 
@@ -308,7 +310,7 @@ export default function ApplicationsPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Bitmə tarixi</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">{tClient('apps_end_date', locale)}</label>
                 <input 
                   type="date" 
                   className="w-full px-4 py-3 border border-cyan-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 bg-white/80" 
@@ -376,7 +378,7 @@ export default function ApplicationsPage() {
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-6 bg-gradient-to-r from-cyan-50 to-teal-50 rounded-xl border border-cyan-100"
               >
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Yaş Aralığı</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">{tClient('apps_age_range', locale)}</label>
                   <div className="flex gap-2">
                     <input
                       type="number"
@@ -395,19 +397,19 @@ export default function ApplicationsPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Cinsiyyət</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">{tClient('apps_gender', locale)}</label>
                   <select
                     className="w-full px-3 py-2 rounded-xl border border-cyan-200 focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 bg-white/80 text-sm"
                     value={filters.gender}
                     onChange={(e) => handleFilterChange({ ...filters, gender: e.target.value })}
                   >
-                    <option value="">Hamısı</option>
-                    <option value="male">Kişi</option>
-                    <option value="female">Qadın</option>
+                    <option value="">{tClient('apps_all', locale)}</option>
+                    <option value="male">{tClient('apps_male', locale)}</option>
+                    <option value="female">{tClient('apps_female', locale)}</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Sığorta Məbləği (AZN)</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">{tClient('apps_coverage', locale)}</label>
                   <div className="flex gap-2">
                     <input
                       type="number"
@@ -426,7 +428,7 @@ export default function ApplicationsPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Müddət (il)</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">{tClient('apps_term', locale)}</label>
                   <div className="flex gap-2">
                     <input
                       type="number"
@@ -614,12 +616,12 @@ export default function ApplicationsPage() {
                       className="w-4 h-4 rounded border-cyan-300 text-cyan-600 focus:ring-cyan-500"
                     />
                   </th>
-                  <th className="px-4 py-4 text-left font-semibold text-gray-900">Tarix</th>
-                  <th className="px-4 py-4 text-left font-semibold text-gray-900">Ad Soyad</th>
-                  <th className="px-4 py-4 text-left font-semibold text-gray-900">Email</th>
-                  <th className="px-4 py-4 text-left font-semibold text-gray-900">Telefon</th>
-                  <th className="px-4 py-4 text-left font-semibold text-gray-900">Status</th>
-                  {role === 'superadmin' && <th className="px-6 py-4 text-left font-semibold text-gray-900">Təyinat</th>}
+                  <th className="px-4 py-4 text-left font-semibold text-gray-900">{tClient('apps_date', locale)}</th>
+                  <th className="px-4 py-4 text-left font-semibold text-gray-900">{tClient('apps_full_name', locale)}</th>
+                  <th className="px-4 py-4 text-left font-semibold text-gray-900">{tClient('apps_email', locale)}</th>
+                  <th className="px-4 py-4 text-left font-semibold text-gray-900">{tClient('apps_phone', locale)}</th>
+                  <th className="px-4 py-4 text-left font-semibold text-gray-900">{tClient('apps_status', locale)}</th>
+                  {role === 'superadmin' && <th className="px-6 py-4 text-left font-semibold text-gray-900">{tClient('apps_assign', locale)}</th>}
                   <th className="px-4 py-4">Rəy</th>
                 </tr>
               </thead>
@@ -653,9 +655,9 @@ export default function ApplicationsPage() {
                         onChange={(e) => updateStatus(a.id, e.target.value)} 
                         className="px-3 py-2 rounded-xl border border-cyan-200 bg-white/80 focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 text-sm font-medium"
                       >
-                        <option value="pending">Gözləmədə</option>
-                        <option value="in_progress">Təsdiqlənib</option>
-                        <option value="closed">İmtina olunub</option>
+                        <option value="pending">{tClient('apps_pending', locale)}</option>
+                        <option value="in_progress">{tClient('apps_approved', locale)}</option>
+                        <option value="closed">{tClient('apps_rejected', locale)}</option>
                       </select>
                     </td>
                     {role === 'superadmin' && (
@@ -786,7 +788,7 @@ export default function ApplicationsPage() {
                 </div>
                 {role === 'superadmin' && (
                   <div className="mt-4 pt-4 border-t border-cyan-100">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Agent təyinatı:</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">{tClient('apps_agent_assign', locale)}:</label>
                     <select 
                       value={a.assigned_agent_id ?? ''} 
                       onChange={(e) => assignTo(a.id, e.target.value)} 
@@ -882,8 +884,8 @@ export default function ApplicationsPage() {
                 <div className="absolute inset-0 w-12 h-12 border-4 border-transparent border-t-teal-500 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
               </div>
               <div className="text-center">
-                <p className="text-gray-700 font-semibold text-lg">Müraciətlər yüklənir...</p>
-                <p className="text-gray-500 text-sm mt-1">Zəhmət olmasa gözləyin</p>
+                <p className="text-gray-700 font-semibold text-lg">{tClient('apps_loading', locale)}</p>
+                <p className="text-gray-500 text-sm mt-1">{tClient('dashboard_wait', locale)}</p>
               </div>
             </div>
           </div>

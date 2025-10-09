@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@/lib/supabase';
+import { tClient, useLocale } from '@/lib/i18n/client';
 import { 
   BarChart, 
   Bar, 
@@ -60,6 +61,7 @@ type DashboardData = {
 };
 
 export default function DashboardPage() {
+  const [locale] = useLocale();
   const router = useRouter();
   const supabase = createSupabaseBrowserClient();
   const [data, setData] = useState<DashboardData | null>(null);
@@ -97,7 +99,7 @@ export default function DashboardPage() {
         .single();
 
       if (profileError || !profile) {
-        setError('Profil məlumatları yüklənə bilmədi');
+        setError(tClient('dashboard_error_profile', locale));
         return;
       }
 
@@ -114,7 +116,7 @@ export default function DashboardPage() {
         },
       });
       if (!response.ok) {
-        throw new Error('Dashboard məlumatları yüklənə bilmədi');
+        throw new Error(tClient('dashboard_error_data', locale));
       }
 
       const dashboardData = await response.json();
@@ -143,7 +145,7 @@ export default function DashboardPage() {
         setCalcStats(null);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Xəta baş verdi');
+      setError(err instanceof Error ? err.message : tClient('dashboard_error', locale));
     } finally {
       setLoading(false);
     }
@@ -172,8 +174,8 @@ export default function DashboardPage() {
             <div className="absolute inset-0 w-12 h-12 border-4 border-transparent border-t-teal-500 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
           </div>
           <div className="text-center">
-            <p className="text-gray-700 font-semibold text-lg">Yüklənir...</p>
-            <p className="text-gray-500 text-sm mt-1">Zəhmət olmasa gözləyin</p>
+            <p className="text-gray-700 font-semibold text-lg">{tClient('dashboard_loading', locale)}</p>
+            <p className="text-gray-500 text-sm mt-1">{tClient('dashboard_wait', locale)}</p>
           </div>
         </div>
       </div>
@@ -188,7 +190,7 @@ export default function DashboardPage() {
           onClick={() => window.location.reload()} 
           className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700"
         >
-          Yenidən yoxla
+          {tClient('dashboard_retry', locale)}
         </button>
       </div>
     );
@@ -197,7 +199,7 @@ export default function DashboardPage() {
   if (!data) {
     return (
       <div className="text-center py-8">
-        <div className="text-red-600">Məlumat yüklənə bilmədi</div>
+        <div className="text-red-600">{tClient('dashboard_error_nodata', locale)}</div>
       </div>
     );
   }
@@ -215,14 +217,14 @@ export default function DashboardPage() {
                 PlanB Admin Dashboard
               </div>
               <h1 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-gray-900 via-cyan-900 to-teal-900 bg-clip-text text-transparent">
-                İcmal
+                {tClient('dashboard_overview', locale)}
               </h1>
               <p className="text-lg text-gray-700 mt-2">
-                {data.role === 'superadmin' ? 'Ümumi statistika və analitika' : 'Sizin müraciətləriniz'}
+                {data.role === 'superadmin' ? tClient('dashboard_stats_all', locale) : tClient('dashboard_stats_yours', locale)}
               </p>
               {lastUpdated && (
                 <p className="text-sm text-cyan-600 mt-2 font-medium">
-                  Son yenilənmə: {lastUpdated.toLocaleTimeString('az-AZ')}
+                  {tClient('dashboard_last_update', locale)}: {lastUpdated.toLocaleTimeString(locale === 'az' ? 'az-AZ' : locale === 'ru' ? 'ru-RU' : 'en-US')}
                 </p>
               )}
             </div>
@@ -263,7 +265,7 @@ export default function DashboardPage() {
                 onClick={() => window.location.reload()}
                 className="px-3 py-1 text-sm bg-cyan-500 text-white rounded hover:bg-cyan-600 transition-colors"
               >
-                Yenilə
+                {tClient('dashboard_refresh', locale)}
               </button>
             </div>
           </div>
@@ -281,19 +283,19 @@ export default function DashboardPage() {
           <>
 
 <div className="rounded-2xl border border-purple-100 bg-gradient-to-br from-purple-50 to-indigo-50 p-6 shadow-sm">
-                <div className="text-sm text-purple-700 font-medium">Kalkulyator Sorğuları (Cəm)</div>
+                <div className="text-sm text-purple-700 font-medium">{tClient('dashboard_calc_total', locale)}</div>
                 <div className="mt-2 text-3xl font-extrabold text-purple-600">{calcStats.total}</div>
-                <div className="mt-1 text-xs text-purple-700">Son 90 gün</div>
+                <div className="mt-1 text-xs text-purple-700">{tClient('dashboard_last_90', locale)}</div>
               </div>
               <div className="rounded-2xl border border-cyan-100 bg-gradient-to-br from-cyan-50 to-teal-50 p-6 shadow-sm">
-                <div className="text-sm text-cyan-700 font-medium">Son 7 Gün</div>
+                <div className="text-sm text-cyan-700 font-medium">{tClient('dashboard_last_7', locale)}</div>
                 <div className="mt-2 text-3xl font-extrabold text-cyan-600">{calcStats.last7Days}</div>
-                <div className="mt-1 text-xs text-cyan-700">Kalkulyator istifadəsi</div>
+                <div className="mt-1 text-xs text-cyan-700">{tClient('dashboard_calc_usage', locale)}</div>
               </div>
               <div className="rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-green-50 p-6 shadow-sm">
-                <div className="text-sm text-emerald-700 font-medium">Orta Aylıq Ödəniş</div>
+                <div className="text-sm text-emerald-700 font-medium">{tClient('dashboard_avg_monthly', locale)}</div>
                 <div className="mt-2 text-3xl font-extrabold text-emerald-600">{calcStats.avgPremium} AZN</div>
-                <div className="mt-1 text-xs text-emerald-700">Server hesablaması</div>
+                <div className="mt-1 text-xs text-emerald-700">{tClient('dashboard_server_calc', locale)}</div>
               </div>
              
             </>
@@ -304,16 +306,16 @@ export default function DashboardPage() {
               <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-cyan-200 to-teal-200 rounded-full blur-2xl opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
               <div className="relative">
                 <div className="text-3xl font-bold text-cyan-600 mb-2">{data.applications.total}</div>
-                <div className="text-sm font-semibold text-gray-900">Ümumi Müraciət</div>
-                <div className="text-xs text-cyan-600 mt-1">PlanB müraciətləri</div>
+                <div className="text-sm font-semibold text-gray-900">{tClient('dashboard_total_apps', locale)}</div>
+                <div className="text-xs text-cyan-600 mt-1">{tClient('dashboard_planb_apps', locale)}</div>
               </div>
             </div>
             <div className="group relative overflow-hidden rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-green-50 p-6 shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-emerald-200 to-green-200 rounded-full blur-2xl opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
               <div className="relative">
                 <div className="text-3xl font-bold text-emerald-600 mb-2">{data.agents.total}</div>
-                <div className="text-sm font-semibold text-gray-900">Aktiv Agent</div>
-                <div className="text-xs text-emerald-600 mt-1">İşləyən agentlər</div>
+                <div className="text-sm font-semibold text-gray-900">{tClient('dashboard_active_agents', locale)}</div>
+                <div className="text-xs text-emerald-600 mt-1">{tClient('dashboard_working_agents', locale)}</div>
               </div>
             </div>
             {/* Removed legacy calculator totalUses card in favor of server-logged metrics */}
@@ -321,34 +323,34 @@ export default function DashboardPage() {
               <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-orange-200 to-yellow-200 rounded-full blur-2xl opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
               <div className="relative">
                 <div className="text-3xl font-bold text-orange-600 mb-2">{data.business.monthlyGrowth}%</div>
-                <div className="text-sm font-semibold text-gray-900">Aylıq Artım</div>
-                <div className="text-xs text-orange-600 mt-1">PlanB böyüməsi</div>
+                <div className="text-sm font-semibold text-gray-900">{tClient('dashboard_monthly_growth', locale)}</div>
+                <div className="text-xs text-orange-600 mt-1">{tClient('dashboard_planb_growth', locale)}</div>
               </div>
             </div>
             <div className="group relative overflow-hidden rounded-2xl border border-teal-100 bg-gradient-to-br from-teal-50 to-cyan-50 p-6 shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-teal-200 to-cyan-200 rounded-full blur-2xl opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
               <div className="relative">
                 <div className="text-3xl font-bold text-teal-600 mb-2">{data.calculator.conversionRate}%</div>
-                <div className="text-sm font-semibold text-gray-900">Çevrilmə Faizi</div>
-                <div className="text-xs text-teal-600 mt-1">Kalkulyator → Müraciət</div>
+                <div className="text-sm font-semibold text-gray-900">{tClient('dashboard_conversion', locale)}</div>
+                <div className="text-xs text-teal-600 mt-1">{tClient('dashboard_calc_to_app', locale)}</div>
               </div>
             </div>
             <div className="group relative overflow-hidden rounded-2xl border border-pink-100 bg-gradient-to-br from-pink-50 to-rose-50 p-6 shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-pink-200 to-rose-200 rounded-full blur-2xl opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
               <div className="relative">
                 <div className="text-3xl font-bold text-pink-600 mb-2">{data.business.revenueProjection} AZN</div>
-                <div className="text-sm font-semibold text-gray-900">Gəlir Proqnozu</div>
-                <div className="text-xs text-pink-600 mt-1">Aylıq gəlir</div>
+                <div className="text-sm font-semibold text-gray-900">{tClient('dashboard_revenue', locale)}</div>
+                <div className="text-xs text-pink-600 mt-1">{tClient('dashboard_monthly_revenue', locale)}</div>
               </div>
             </div>
           </div>
 
           {/* Applications Section */}
-          <h2 className="text-3xl text-center font-bold text-gray-900 mt-24">Müraciətlər</h2>
+          <h2 className="text-3xl text-center font-bold text-gray-900 mt-24">{tClient('dashboard_apps_section', locale)}</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4 lg:gap-6">
             {/* Applications by Status */}
             <div className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm">
-              <h3 className="text-lg font-semibold mb-4">Müraciətlər Statusa Görə</h3>
+              <h3 className="text-lg font-semibold mb-4">{tClient('dashboard_apps_by_status', locale)}</h3>
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                   <Pie
@@ -372,7 +374,7 @@ export default function DashboardPage() {
 
             {/* Applications by Age Group */}
             <div className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm">
-              <h3 className="text-lg font-semibold mb-4">Yaş Qruplarına Görə</h3>
+              <h3 className="text-lg font-semibold mb-4">{tClient('dashboard_by_age', locale)}</h3>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={data.applications.byAgeGroup}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -386,7 +388,7 @@ export default function DashboardPage() {
 
             {/* Applications by Gender */}
             <div className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm">
-              <h3 className="text-lg font-semibold mb-4">Cinsiyyət Paylanması</h3>
+              <h3 className="text-lg font-semibold mb-4">{tClient('dashboard_gender_dist', locale)}</h3>
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                   <Pie
@@ -410,7 +412,7 @@ export default function DashboardPage() {
 
             {/* Coverage Amount Distribution */}
             <div className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm">
-              <h3 className="text-lg font-semibold mb-4">Sığorta Məbləği Paylanması</h3>
+              <h3 className="text-lg font-semibold mb-4">{tClient('dashboard_coverage_dist', locale)}</h3>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={data.applications.byCoverageAmount}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -429,7 +431,7 @@ export default function DashboardPage() {
 
               {/* Daily Trend */}
               <div className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm">
-              <h3 className="text-lg font-semibold mb-4">Günlük Müraciət Trendi</h3>
+              <h3 className="text-lg font-semibold mb-4">{tClient('dashboard_daily_trend', locale)}</h3>
               <ResponsiveContainer width="100%" height={300}>
                 <AreaChart data={data.applications.dailyTrend}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -443,11 +445,11 @@ export default function DashboardPage() {
 
 
 
-          <h2 className="text-3xl text-center font-bold text-gray-900 mt-24">Agentlər</h2>
+          <h2 className="text-3xl text-center font-bold text-gray-900 mt-24">{tClient('dashboard_agents_section', locale)}</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4 lg:gap-6">
             {/* Agent Performance */}
             <div className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm min-h-[380px] flex flex-col">
-              <h3 className="text-lg font-semibold mb-4">Agent Performansı</h3>
+              <h3 className="text-lg font-semibold mb-4">{tClient('dashboard_agent_perf', locale)}</h3>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={data.agents.performance}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -461,7 +463,7 @@ export default function DashboardPage() {
 
             {/* Peak Hours */}
             <div className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm min-h-[380px] flex flex-col">
-              <h3 className="text-lg font-semibold mb-4">Peak Saatlar</h3>
+              <h3 className="text-lg font-semibold mb-4">{tClient('dashboard_peak_hours', locale)}</h3>
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={data.business.peakHours}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -475,12 +477,12 @@ export default function DashboardPage() {
           </div>
 
           {/* Calculator Section */}
-          <h2 className="text-3xl text-center font-bold text-gray-900 mt-24">Kalkulyator</h2>
+          <h2 className="text-3xl text-center font-bold text-gray-900 mt-24">{tClient('dashboard_calc_section', locale)}</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4 lg:gap-6">
             {/* Calculator Trend (last 14 days) */}
             {calcStats && (
               <div className="rounded-xl border border-purple-100 bg-white p-6 shadow-sm">
-                <h3 className="text-lg font-semibold mb-4">Kalkulyator Trendi (14 gün)</h3>
+                <h3 className="text-lg font-semibold mb-4">{tClient('dashboard_calc_trend', locale)}</h3>
                 <ResponsiveContainer width="100%" height={300}>
                   <AreaChart data={calcStats.trend}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -496,7 +498,7 @@ export default function DashboardPage() {
             {/* Calculator by Gender */}
             {calcStats && (
               <div className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm">
-                <h3 className="text-lg font-semibold mb-4">Cinsə Görə Sorğular</h3>
+                <h3 className="text-lg font-semibold mb-4">{tClient('dashboard_by_gender', locale)}</h3>
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
                     <Pie
@@ -522,7 +524,7 @@ export default function DashboardPage() {
             {/* Calculator by Age Bucket */}
             {calcStats && (
               <div className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm">
-                <h3 className="text-lg font-semibold mb-4">Yaş Qruplarına Görə Sorğular</h3>
+                <h3 className="text-lg font-semibold mb-4">{tClient('dashboard_by_age_queries', locale)}</h3>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={Object.entries(calcStats.byAgeBucket || {}).map(([ageGroup, count]) => ({ ageGroup, count }))}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -538,7 +540,7 @@ export default function DashboardPage() {
             {/* Calculator by Coverage Bucket */}
             {calcStats && (
               <div className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm">
-                <h3 className="text-lg font-semibold mb-4">Məbləğ Aralıqlarına Görə Sorğular</h3>
+                <h3 className="text-lg font-semibold mb-4">{tClient('dashboard_by_coverage', locale)}</h3>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={Object.entries(calcStats.byCoverageBucket || {}).map(([range, count]) => ({ range, count }))}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -554,7 +556,7 @@ export default function DashboardPage() {
 
             {/* Most Used Parameters */}
             <div className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm">
-              <h3 className="text-lg font-semibold mb-4">Ən Çox İstifadə Olunan Parametrlər</h3>
+              <h3 className="text-lg font-semibold mb-4">{tClient('dashboard_most_params', locale)}</h3>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={data.calculator.mostUsedParams}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -575,8 +577,8 @@ export default function DashboardPage() {
               <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-cyan-200 to-teal-200 rounded-full blur-2xl opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
               <div className="relative">
                 <div className="text-3xl font-bold text-cyan-600 mb-2">{data.agentApplications?.total || 0}</div>
-                <div className="text-sm font-semibold text-gray-900">Sizin Müraciətləriniz</div>
-                <div className="text-xs text-cyan-600 mt-1">PlanB müraciətləri</div>
+                <div className="text-sm font-semibold text-gray-900">{tClient('dashboard_your_apps', locale)}</div>
+                <div className="text-xs text-cyan-600 mt-1">{tClient('dashboard_planb_apps', locale)}</div>
               </div>
             </div>
             <div className="group relative overflow-hidden rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-green-50 p-6 shadow-lg hover:shadow-xl transition-all duration-300">
@@ -585,8 +587,8 @@ export default function DashboardPage() {
                 <div className="text-3xl font-bold text-emerald-600 mb-2">
                   {data.agentApplications?.byStatus.find(s => s.status === 'Təsdiqlənib')?.count || 0}
                 </div>
-                <div className="text-sm font-semibold text-gray-900">Təsdiqlənmiş</div>
-                <div className="text-xs text-emerald-600 mt-1">Uğurlu müraciətlər</div>
+                <div className="text-sm font-semibold text-gray-900">{tClient('dashboard_approved', locale)}</div>
+                <div className="text-xs text-emerald-600 mt-1">{tClient('dashboard_successful', locale)}</div>
               </div>
             </div>
             <div className="group relative overflow-hidden rounded-2xl border border-orange-100 bg-gradient-to-br from-orange-50 to-yellow-50 p-6 shadow-lg hover:shadow-xl transition-all duration-300">
@@ -595,15 +597,15 @@ export default function DashboardPage() {
                 <div className="text-3xl font-bold text-orange-600 mb-2">
                   {data.agentApplications?.byStatus.find(s => s.status === 'Gözləmədə')?.count || 0}
                 </div>
-                <div className="text-sm font-semibold text-gray-900">Gözləmədə</div>
-                <div className="text-xs text-orange-600 mt-1">Gözləyən müraciətlər</div>
+                <div className="text-sm font-semibold text-gray-900">{tClient('dashboard_pending', locale)}</div>
+                <div className="text-xs text-orange-600 mt-1">{tClient('dashboard_waiting', locale)}</div>
               </div>
             </div>
           </div>
 
           {/* Agent Applications Chart */}
           <div className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm">
-            <h3 className="text-lg font-semibold mb-4">Müraciətləriniz Statusa Görə</h3>
+            <h3 className="text-lg font-semibold mb-4">{tClient('dashboard_your_by_status', locale)}</h3>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie

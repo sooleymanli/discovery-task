@@ -5,10 +5,12 @@ import { useState, useEffect } from 'react';
 import { createSupabaseBrowserClient } from '@/lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { tClient, useLocale } from '@/lib/i18n/client';
 
 type NavItem = { href: string; label: string; icon: React.ReactNode; roles?: string[] };
 
 export function AdminSidebar() {
+  const [locale] = useLocale();
   const pathname = usePathname();
   const [userRole, setUserRole] = useState<string>('agent');
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -32,7 +34,7 @@ export function AdminSidebar() {
   const allItems: NavItem[] = [
     {
       href: '/admin/dashboard',
-      label: 'İcmal',
+      label: tClient('overview', locale),
       roles: ['superadmin', 'agent'],
       icon: (
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -45,7 +47,7 @@ export function AdminSidebar() {
     },
     {
       href: '/admin/dashboard/messaging',
-      label: 'Mesaj Göndər',
+      label: tClient('messaging', locale),
       roles: ['superadmin'],
       icon: (
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -55,7 +57,7 @@ export function AdminSidebar() {
     },
     {
       href: '/admin/dashboard/applications',
-      label: 'Müraciətlər',
+      label: tClient('applications', locale),
       roles: ['superadmin', 'agent'],
       icon: (
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -67,7 +69,7 @@ export function AdminSidebar() {
     },
     {
       href: '/admin/dashboard/agents',
-      label: 'Agentlər',
+      label: tClient('agents', locale),
       roles: ['superadmin'], // Yalnız superadmin görə bilər
       icon: (
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -78,7 +80,7 @@ export function AdminSidebar() {
     },
     {
       href: '/admin/dashboard/calculator-settings',
-      label: 'Kalkulyator',
+      label: tClient('calculator', locale),
       roles: ['superadmin'], // Yalnız superadmin görə bilər
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -97,7 +99,7 @@ export function AdminSidebar() {
     },
     {
       href: '/admin/dashboard/settings',
-      label: 'Tənzimləmələr',
+      label: tClient('settings', locale),
       roles: ['superadmin',"agent"], 
       icon: (
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

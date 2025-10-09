@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { createSupabaseBrowserClient } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { tClient, useLocale } from '@/lib/i18n/client';
 
 type Agent = {
   id: string;
@@ -16,6 +17,7 @@ type Agent = {
 };
 
 export default function AgentsPage() {
+  const [locale] = useLocale();
   const supabase = createSupabaseBrowserClient();
   const router = useRouter();
   const [agents, setAgents] = useState<Agent[]>([]);
@@ -105,8 +107,8 @@ export default function AgentsPage() {
             <div className="absolute inset-0 w-12 h-12 border-4 border-transparent border-t-teal-500 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
           </div>
           <div className="text-center">
-            <p className="text-gray-700 font-semibold text-lg">Yüklənir...</p>
-            <p className="text-gray-500 text-sm mt-1">Zəhmət olmasa gözləyin</p>
+            <p className="text-gray-700 font-semibold text-lg">{tClient('dashboard_loading', locale)}</p>
+            <p className="text-gray-500 text-sm mt-1">{tClient('dashboard_wait', locale)}</p>
           </div>
         </div>
       </div>
@@ -122,9 +124,9 @@ export default function AgentsPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
             </svg>
           </div>
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">Giriş İcazəsi Yoxdur</h3>
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">{tClient('agents_no_access', locale)}</h3>
           <p className="text-gray-600 mb-8 max-w-md mx-auto">
-            Bu səhifəyə giriş icazəniz yoxdur. Yalnız superadmin istifadəçiləri agentləri idarə edə bilər.
+            {tClient('agents_no_access_desc', locale)}
           </p>
           <motion.button 
             onClick={() => router.push('/admin/dashboard')} 
@@ -136,7 +138,7 @@ export default function AgentsPage() {
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
-              Geri qayıt
+              {tClient('agents_back', locale)}
             </div>
           </motion.button>
         </div>
@@ -154,19 +156,19 @@ export default function AgentsPage() {
             <div>
               <div className="inline-flex items-center rounded-full bg-gradient-to-r from-cyan-50 to-teal-50 px-4 py-2 text-sm font-medium text-cyan-700 border border-cyan-200 mb-4">
                 <span className="w-2 h-2 bg-cyan-500 rounded-full mr-2 animate-pulse"></span>
-                PlanB Agentlər
+                {tClient('agents_badge', locale)}
               </div>
               <h1 className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-gray-900 via-cyan-900 to-teal-900 bg-clip-text text-transparent">
-                Agentlər
+                {tClient('agents_title', locale)}
               </h1>
               <p className="text-lg text-gray-700 mt-2">
-                PlanB agentlərinin idarə edilməsi və izlənilməsi
+                {tClient('agents_subtitle', locale)}
               </p>
             </div>
             
             <div className="flex items-center gap-4">
               <div className="text-right">
-                <div className="text-sm text-gray-500">Ümumi agent</div>
+                <div className="text-sm text-gray-500">{tClient('agents_total', locale)}</div>
                 <div className="text-2xl font-bold text-cyan-600">{agents.length}</div>
               </div>
               <button
@@ -177,7 +179,7 @@ export default function AgentsPage() {
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                   </svg>
-                  Yenilə
+                  {tClient('agents_refresh', locale)}
                 </div>
               </button>
             </div>
@@ -189,13 +191,13 @@ export default function AgentsPage() {
       <div className="relative">
         <div className="rounded-2xl border border-cyan-100 bg-white/80 backdrop-blur-sm p-6 shadow-lg">
           <div className="mb-4">
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Yeni Agent Əlavə Et</h2>
-            <p className="text-gray-600">PlanB komandasına yeni agent əlavə edin</p>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">{tClient('agents_add_title', locale)}</h2>
+            <p className="text-gray-600">{tClient('agents_add_desc', locale)}</p>
           </div>
           
           <form onSubmit={createAgent} className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">Ad Soyad *</label>
+              <label className="block text-sm font-semibold text-gray-700">{tClient('agents_full_name', locale)} *</label>
               <input 
                 className="w-full px-4 py-3 border border-cyan-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 bg-white/80" 
                 placeholder="Ad Soyad"
@@ -205,7 +207,7 @@ export default function AgentsPage() {
               />
             </div>
             <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">Email *</label>
+              <label className="block text-sm font-semibold text-gray-700">{tClient('agents_email', locale)} *</label>
               <input 
                 className="w-full px-4 py-3 border border-cyan-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 bg-white/80" 
                 placeholder="email@example.com"
@@ -225,7 +227,7 @@ export default function AgentsPage() {
               />
             </div>
             <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">Telegram Chat ID</label>
+              <label className="block text-sm font-semibold text-gray-700">{tClient('agents_chat_id', locale)}</label>
               <input 
                 className="w-full px-4 py-3 border border-cyan-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 bg-white/80" 
                 placeholder="123456789"
@@ -247,14 +249,14 @@ export default function AgentsPage() {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
-                      Göndərilir...
+                      {tClient('agents_creating', locale)}
                     </>
                   ) : (
                     <>
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                       </svg>
-                      Agent yarat və dəvət et
+                      {tClient('agents_create', locale)}
                     </>
                   )}
                 </div>
@@ -276,20 +278,20 @@ export default function AgentsPage() {
       {/* Agents Table */}
       <div className="rounded-2xl border border-cyan-100 bg-white/90 backdrop-blur-sm shadow-xl overflow-hidden">
         <div className="bg-gradient-to-r from-cyan-50 to-teal-50 px-6 py-4 border-b border-cyan-100">
-          <h3 className="text-lg font-semibold text-gray-900">Agentlər Siyahısı</h3>
-          <p className="text-sm text-gray-600 mt-1">PlanB komandasının agentləri</p>
+          <h3 className="text-lg font-semibold text-gray-900">{tClient('agents_list_title', locale)}</h3>
+          <p className="text-sm text-gray-600 mt-1">{tClient('agents_add_desc', locale)}</p>
         </div>
         
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gradient-to-r from-cyan-50 to-teal-50">
               <tr>
-                <th className="px-6 py-4 text-left font-semibold text-gray-900">Ad Soyad</th>
-                <th className="px-6 py-4 text-left font-semibold text-gray-900">Email</th>
-                <th className="px-6 py-4 text-left font-semibold text-gray-900">Telefon</th>
+                <th className="px-6 py-4 text-left font-semibold text-gray-900">{tClient('agents_full_name', locale)}</th>
+                <th className="px-6 py-4 text-left font-semibold text-gray-900">{tClient('agents_email', locale)}</th>
+                <th className="px-6 py-4 text-left font-semibold text-gray-900">{tClient('agents_phone', locale)}</th>
                 <th className="px-6 py-4 text-left font-semibold text-gray-900">Telegram</th>
-                <th className="px-6 py-4 text-left font-semibold text-gray-900">Status</th>
-                <th className="px-6 py-4 text-left font-semibold text-gray-900">Əməliyyatlar</th>
+                <th className="px-6 py-4 text-left font-semibold text-gray-900">{tClient('agents_status', locale)}</th>
+                <th className="px-6 py-4 text-left font-semibold text-gray-900">{tClient('agents_actions', locale)}</th>
               </tr>
             </thead>
             <tbody>

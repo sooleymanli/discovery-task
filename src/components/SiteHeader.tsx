@@ -3,8 +3,11 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { LanguageSwitcher } from './LanguageSwitcher';
+import { tClient, useLocale } from '@/lib/i18n/client';
 
 export function SiteHeader() {
+  const [locale] = useLocale();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -40,8 +43,8 @@ export function SiteHeader() {
               <span className="text-white font-bold text-lg">B</span>
             </motion.div>
             <div className="flex flex-col">
-              <span className="font-bold text-xl text-gray-900">PlanB</span>
-              <span className="text-xs text-cyan-600 -mt-1 font-medium">Sığorta</span>
+              <span className="font-bold text-xl text-gray-900">{tClient('brand_name', locale)}</span>
+              <span className="text-xs text-cyan-600 -mt-1 font-medium">{tClient('brand_tag', locale)}</span>
             </div>
           </Link>
         </motion.div>
@@ -49,22 +52,22 @@ export function SiteHeader() {
         <div className="hidden md:flex items-center space-x-8">
           <motion.div whileHover={{ y: -2 }}>
             <Link href="/#calculator" className="text-gray-700 hover:text-cyan-600 transition-colors font-medium">
-              Hesablama
+              {tClient('nav_calculator', locale)}
             </Link>
           </motion.div>
           <motion.div whileHover={{ y: -2 }}> ̰
             <Link href="/#features" className="text-gray-700 hover:text-cyan-600 transition-colors font-medium">
-              Xüsusiyyətlər
+              {tClient('nav_features', locale)}
             </Link>
           </motion.div>
           <motion.div whileHover={{ y: -2 }}>
             <Link href="/#faq" className="text-gray-700 hover:text-cyan-600 transition-colors font-medium">
-              Suallar
+              {tClient('nav_faq', locale)}
             </Link>
           </motion.div>
           <motion.div whileHover={{ y: -2 }}>
             <Link href="/portal" className="text-gray-700 hover:text-cyan-600 transition-colors font-medium">
-              Müraciəti izlə
+              {tClient('track_application', locale)}
             </Link>
           </motion.div>
 
@@ -86,11 +89,11 @@ export function SiteHeader() {
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
-                <span>PlanB al</span>
+                <span>{tClient('apply_cta', locale)}</span>
               </span>
             </motion.div>
           </Link>
-
+          <LanguageSwitcher />
         </div>
 
         {/* Mobile menu button */}
@@ -101,7 +104,7 @@ export function SiteHeader() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              PlanB al
+              {tClient('apply_cta', locale)}
             </motion.div>
           </Link>
 
@@ -134,7 +137,7 @@ export function SiteHeader() {
                   className="block text-gray-700 hover:text-cyan-600 transition-colors font-medium py-2"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  Hesablama
+                  {tClient('nav_calculator', locale)}
                 </Link>
               </motion.div>
               <motion.div whileHover={{ x: 5 }}>
@@ -143,7 +146,7 @@ export function SiteHeader() {
                   className="block text-gray-700 hover:text-cyan-600 transition-colors font-medium py-2"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  Xüsusiyyətlər
+                  {tClient('nav_features', locale)}
                 </Link>
               </motion.div>
               <motion.div whileHover={{ x: 5 }}>
@@ -152,7 +155,7 @@ export function SiteHeader() {
                   className="block text-gray-700 hover:text-cyan-600 transition-colors font-medium py-2"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  Suallar
+                  {tClient('nav_faq', locale)}
                 </Link>
               </motion.div>
               <motion.div whileHover={{ x: 5 }}>
@@ -161,7 +164,7 @@ export function SiteHeader() {
                   className="block text-gray-700 hover:text-cyan-600 transition-colors font-medium py-2"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  Müraciəti izlə
+                  {tClient('track_application', locale)}
                 </Link>
               </motion.div>
               <motion.div
@@ -178,10 +181,13 @@ export function SiteHeader() {
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
-                    PlanB al
+                    {tClient('apply_cta', locale)}
                   </span>
                 </Link>
               </motion.div>
+              <div className="pt-2">
+                <LanguageSwitcher />
+              </div>
             </div>
           </motion.div>
         )}
